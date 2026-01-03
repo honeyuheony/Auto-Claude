@@ -218,7 +218,44 @@
       "integrationTitle": "Mémoire",
       "integrationDescription": "Configurer la mémoire persistante inter-sessions pour les agents",
       "syncDescription": "Configurer la mémoire persistante"
+    },
+    "authProvider": {
+      "title": "Fournisseur d'auth",
+      "description": "Système double auth",
+      "integrationTitle": "Système Double Auth",
+      "integrationDescription": "Router les différentes phases vers OAuth ou le proxy Antigravity pour optimiser les coûts",
+      "syncDescription": "Configurer le fournisseur d'auth par phase"
     }
+  },
+  "authProvider": {
+    "title": "Système Double Auth",
+    "description": "Router les différentes phases vers différents fournisseurs d'auth pour optimiser les coûts",
+    "antigravityEnabled": "Activer le proxy Antigravity",
+    "antigravityEnabledDescription": "Utiliser le proxy Antigravity pour router les requêtes via des modèles alternatifs (Gemini) pour réduire les coûts",
+    "antigravityBaseUrl": "URL du proxy",
+    "antigravityBaseUrlPlaceholder": "http://localhost:8080",
+    "antigravityBaseUrlDescription": "URL de base du serveur proxy Antigravity",
+    "antigravityAuthToken": "Token d'auth",
+    "antigravityAuthTokenPlaceholder": "Votre token d'authentification proxy",
+    "antigravityAuthTokenDescription": "Token d'authentification pour le proxy Antigravity",
+    "phaseConfig": "Configuration par phase",
+    "phaseConfigDescription": "Choisir quel fournisseur d'auth utiliser pour chaque phase",
+    "oauth": "OAuth (Claude)",
+    "antigravity": "Antigravity (Gemini)",
+    "phases": {
+      "spec": "Création de spec",
+      "planning": "Planification",
+      "coding": "Codage",
+      "qa": "Révision QA"
+    },
+    "defaults": {
+      "spec": "Critique pour la qualité - utilise OAuth",
+      "planning": "Critique pour la qualité - utilise OAuth",
+      "coding": "Optimisé pour les coûts - utilise Antigravity",
+      "qa": "Critique pour la qualité - utilise OAuth"
+    },
+    "warning": "⚠️ Antigravity peut violer les CGU Google/Anthropic. Utiliser uniquement pour des projets personnels.",
+    "setupInstructions": "Installation : npm install -g antigravity-claude-proxy && antigravity-claude-proxy start"
   },
   "agentProfile": {
     "label": "Profil d'agent",

@@ -319,6 +319,17 @@ export interface ProjectEnvConfig {
   // UI Settings
   enableFancyUi: boolean;
 
+  // Auth Provider Settings (Dual Auth System)
+  // Controls which auth provider (OAuth vs Antigravity proxy) is used for each phase
+  antigravityEnabled: boolean;
+  antigravityBaseUrl?: string;  // Default: http://localhost:8080
+  antigravityAuthToken?: string;
+  // Per-phase auth provider overrides (oauth | antigravity)
+  authProviderSpec?: 'oauth' | 'antigravity';
+  authProviderPlanning?: 'oauth' | 'antigravity';
+  authProviderCoding?: 'oauth' | 'antigravity';
+  authProviderQa?: 'oauth' | 'antigravity';
+
   // MCP Server Configuration (per-project overrides)
   mcpServers?: {
     /** Context7 documentation lookup - default: true */

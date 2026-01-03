@@ -13,6 +13,7 @@ export { GitHubIntegrationSection } from './GitHubIntegrationSection';
 export { MemoryBackendSection } from './MemoryBackendSection';
 export { AgentConfigSection } from './AgentConfigSection';
 export { NotificationsSection } from './NotificationsSection';
+export { AuthProviderSection } from './AuthProviderSection';
 
 // Utility components
 export { CollapsibleSection } from './CollapsibleSection';

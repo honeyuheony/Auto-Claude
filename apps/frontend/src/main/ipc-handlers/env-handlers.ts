@@ -141,6 +141,29 @@ export function registerEnvHandlers(
       existingVars['ENABLE_FANCY_UI'] = config.enableFancyUi ? 'true' : 'false';
     }
 
+    // Auth Provider Settings (Dual Auth System)
+    if (config.antigravityEnabled !== undefined) {
+      existingVars['ANTIGRAVITY_ENABLED'] = config.antigravityEnabled ? 'true' : 'false';
+    }
+    if (config.antigravityBaseUrl !== undefined) {
+      existingVars['ANTIGRAVITY_BASE_URL'] = config.antigravityBaseUrl;
+    }
+    if (config.antigravityAuthToken !== undefined) {
+      existingVars['ANTIGRAVITY_AUTH_TOKEN'] = config.antigravityAuthToken;
+    }
+    if (config.authProviderSpec !== undefined) {
+      existingVars['AUTH_PROVIDER_SPEC'] = config.authProviderSpec;
+    }
+    if (config.authProviderPlanning !== undefined) {
+      existingVars['AUTH_PROVIDER_PLANNING'] = config.authProviderPlanning;
+    }
+    if (config.authProviderCoding !== undefined) {
+      existingVars['AUTH_PROVIDER_CODING'] = config.authProviderCoding;
+    }
+    if (config.authProviderQa !== undefined) {
+      existingVars['AUTH_PROVIDER_QA'] = config.authProviderQa;
+    }
+
     // MCP Server Configuration
     if (config.mcpServers) {
       if (config.mcpServers.context7Enabled !== undefined) {
@@ -232,6 +255,19 @@ ${existingVars['DEFAULT_BRANCH'] ? `DEFAULT_BRANCH=${existingVars['DEFAULT_BRANC
 # UI SETTINGS (OPTIONAL)
 # =============================================================================
 ${existingVars['ENABLE_FANCY_UI'] !== undefined ? `ENABLE_FANCY_UI=${existingVars['ENABLE_FANCY_UI']}` : '# ENABLE_FANCY_UI=true'}
+
+# =============================================================================
+# DUAL AUTH SYSTEM (OPTIONAL)
+# Route phases to OAuth (Claude) or Antigravity (Gemini) for cost optimization
+# =============================================================================
+${existingVars['ANTIGRAVITY_ENABLED'] !== undefined ? `ANTIGRAVITY_ENABLED=${existingVars['ANTIGRAVITY_ENABLED']}` : '# ANTIGRAVITY_ENABLED=false'}
+${existingVars['ANTIGRAVITY_BASE_URL'] ? `ANTIGRAVITY_BASE_URL=${existingVars['ANTIGRAVITY_BASE_URL']}` : '# ANTIGRAVITY_BASE_URL=http://localhost:8080'}
+${existingVars['ANTIGRAVITY_AUTH_TOKEN'] ? `ANTIGRAVITY_AUTH_TOKEN=${existingVars['ANTIGRAVITY_AUTH_TOKEN']}` : '# ANTIGRAVITY_AUTH_TOKEN='}
+# Per-phase auth provider (oauth | antigravity)
+${existingVars['AUTH_PROVIDER_SPEC'] ? `AUTH_PROVIDER_SPEC=${existingVars['AUTH_PROVIDER_SPEC']}` : '# AUTH_PROVIDER_SPEC=oauth'}
+${existingVars['AUTH_PROVIDER_PLANNING'] ? `AUTH_PROVIDER_PLANNING=${existingVars['AUTH_PROVIDER_PLANNING']}` : '# AUTH_PROVIDER_PLANNING=oauth'}
+${existingVars['AUTH_PROVIDER_CODING'] ? `AUTH_PROVIDER_CODING=${existingVars['AUTH_PROVIDER_CODING']}` : '# AUTH_PROVIDER_CODING=antigravity'}
+${existingVars['AUTH_PROVIDER_QA'] ? `AUTH_PROVIDER_QA=${existingVars['AUTH_PROVIDER_QA']}` : '# AUTH_PROVIDER_QA=oauth'}
 
 # =============================================================================
 # MCP SERVER CONFIGURATION (per-project overrides)
@@ -336,7 +372,8 @@ ${existingVars['GRAPHITI_DB_PATH'] ? `GRAPHITI_DB_PATH=${existingVars['GRAPHITI_
         graphitiEnabled: false,
         enableFancyUi: true,
         claudeTokenIsGlobal: false,
-        openaiKeyIsGlobal: false
+        openaiKeyIsGlobal: false,
+        antigravityEnabled: false
       };
 
       // Parse project-specific .env if it exists
@@ -434,6 +471,31 @@ ${existingVars['GRAPHITI_DB_PATH'] ? `GRAPHITI_DB_PATH=${existingVars['GRAPHITI_
 
       if (vars['ENABLE_FANCY_UI']?.toLowerCase() === 'false') {
         config.enableFancyUi = false;
+      }
+
+      // Auth Provider Settings (Dual Auth System)
+      if (vars['ANTIGRAVITY_ENABLED']?.toLowerCase() === 'true') {
+        config.antigravityEnabled = true;
+      } else {
+        config.antigravityEnabled = false;
+      }
+      if (vars['ANTIGRAVITY_BASE_URL']) {
+        config.antigravityBaseUrl = vars['ANTIGRAVITY_BASE_URL'];
+      }
+      if (vars['ANTIGRAVITY_AUTH_TOKEN']) {
+        config.antigravityAuthToken = vars['ANTIGRAVITY_AUTH_TOKEN'];
+      }
+      if (vars['AUTH_PROVIDER_SPEC']) {
+        config.authProviderSpec = vars['AUTH_PROVIDER_SPEC'] as 'oauth' | 'antigravity';
+      }
+      if (vars['AUTH_PROVIDER_PLANNING']) {
+        config.authProviderPlanning = vars['AUTH_PROVIDER_PLANNING'] as 'oauth' | 'antigravity';
+      }
+      if (vars['AUTH_PROVIDER_CODING']) {
+        config.authProviderCoding = vars['AUTH_PROVIDER_CODING'] as 'oauth' | 'antigravity';
+      }
+      if (vars['AUTH_PROVIDER_QA']) {
+        config.authProviderQa = vars['AUTH_PROVIDER_QA'] as 'oauth' | 'antigravity';
       }
 
       // Populate graphitiProviderConfig from .env file (embeddings only - no LLM provider)

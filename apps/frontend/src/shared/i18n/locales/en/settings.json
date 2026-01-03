@@ -218,7 +218,44 @@
       "integrationTitle": "Memory",
       "integrationDescription": "Configure persistent cross-session memory for agents",
       "syncDescription": "Configure persistent memory"
+    },
+    "authProvider": {
+      "title": "Auth Provider",
+      "description": "Dual auth system",
+      "integrationTitle": "Dual Auth System",
+      "integrationDescription": "Route different phases to OAuth or Antigravity proxy for cost optimization",
+      "syncDescription": "Configure auth provider per phase"
     }
+  },
+  "authProvider": {
+    "title": "Dual Auth System",
+    "description": "Route different phases to different auth providers for cost optimization",
+    "antigravityEnabled": "Enable Antigravity Proxy",
+    "antigravityEnabledDescription": "Use Antigravity proxy to route requests through alternative models (Gemini) for cost savings",
+    "antigravityBaseUrl": "Proxy URL",
+    "antigravityBaseUrlPlaceholder": "http://localhost:8080",
+    "antigravityBaseUrlDescription": "Base URL for the Antigravity proxy server",
+    "antigravityAuthToken": "Auth Token",
+    "antigravityAuthTokenPlaceholder": "Your proxy auth token",
+    "antigravityAuthTokenDescription": "Authentication token for the Antigravity proxy",
+    "phaseConfig": "Phase Configuration",
+    "phaseConfigDescription": "Choose which auth provider to use for each phase",
+    "oauth": "OAuth (Claude)",
+    "antigravity": "Antigravity (Gemini)",
+    "phases": {
+      "spec": "Spec Creation",
+      "planning": "Planning",
+      "coding": "Coding",
+      "qa": "QA Review"
+    },
+    "defaults": {
+      "spec": "Quality critical - uses OAuth",
+      "planning": "Quality critical - uses OAuth",
+      "coding": "Cost optimized - uses Antigravity",
+      "qa": "Quality critical - uses OAuth"
+    },
+    "warning": "⚠️ Antigravity may violate Google/Anthropic ToS. Use for personal projects only.",
+    "setupInstructions": "Setup: npm install -g antigravity-claude-proxy && antigravity-claude-proxy start"
   },
   "agentProfile": {
     "label": "Agent Profile",

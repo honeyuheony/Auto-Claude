@@ -3,6 +3,7 @@ import type { Project, ProjectSettings as ProjectSettingsType, AutoBuildVersionI
 import { SettingsSection } from '../SettingsSection';
 import { GeneralSettings } from '../../project-settings/GeneralSettings';
 import { SecuritySettings } from '../../project-settings/SecuritySettings';
+import { AuthProviderSection } from '../../project-settings/AuthProviderSection';
 import { LinearIntegration } from '../integrations/LinearIntegration';
 import { GitHubIntegration } from '../integrations/GitHubIntegration';
 import { GitLabIntegration } from '../integrations/GitLabIntegration';
@@ -186,6 +187,29 @@ export function SectionRouter({
               expanded={true}
               onToggle={() => {}}
             />
+          </InitializationGuard>
+        </SettingsSection>
+      );
+
+    case 'authProvider':
+      return (
+        <SettingsSection
+          title={t('projectSections.authProvider.integrationTitle')}
+          description={t('projectSections.authProvider.integrationDescription')}
+        >
+          <InitializationGuard
+            initialized={!!project.autoBuildPath}
+            title={t('projectSections.authProvider.integrationTitle')}
+            description={t('projectSections.authProvider.syncDescription')}
+          >
+            {envConfig && (
+              <AuthProviderSection
+                isExpanded={true}
+                onToggle={() => {}}
+                envConfig={envConfig}
+                onUpdateConfig={updateEnvConfig}
+              />
+            )}
           </InitializationGuard>
         </SettingsSection>
       );

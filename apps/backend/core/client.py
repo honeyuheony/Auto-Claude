@@ -138,7 +138,7 @@ from core.auth import (
     get_sdk_env_vars_with_fallback,
     require_auth_token,
 )
-from phase_config import get_agent_auth_provider
+from phase_config import get_agent_auth_provider, get_setting_sources
 from linear_updater import is_linear_enabled
 from prompts_pkg.project_context import detect_project_capabilities, load_project_index
 from security import bash_security_hook
@@ -447,6 +447,7 @@ def create_client(
     output_format: dict | None = None,
     agents: dict | None = None,
     auth_provider: str | None = None,
+    setting_sources: list[str] | None = None,
 ) -> ClaudeSDKClient:
     """
     Create a Claude Agent SDK client with multi-layered security.
@@ -476,6 +477,13 @@ def create_client(
         auth_provider: Auth provider to use ("oauth" or "antigravity").
                       If None, determined automatically based on agent_type and phase config.
                       "antigravity" routes requests through Antigravity proxy for cost savings.
+        setting_sources: List of setting sources to load from filesystem.
+                        Valid values: ["user", "project", "local"]
+                        - "user": Load from ~/.claude/ (skills, hooks, commands)
+                        - "project": Load from .claude/ in project (CLAUDE.md, settings)
+                        - "local": Load from .claude/settings.local.json
+                        If None, no filesystem settings are loaded (SDK isolation mode).
+                        See: https://platform.claude.com/docs/en/agent-sdk/skills
 
     Returns:
         Configured ClaudeSDKClient
@@ -774,5 +782,13 @@ def create_client(
     # See: https://platform.claude.com/docs/en/agent-sdk/subagents
     if agents:
         options_kwargs["agents"] = agents
+
+    # Add setting_sources for loading skills, hooks, commands from ~/.claude/ and .claude/
+    # Priority: explicit parameter > environment variable > None (disabled)
+    # See: https://platform.claude.com/docs/en/agent-sdk/skills
+    effective_setting_sources = setting_sources or get_setting_sources()
+    if effective_setting_sources:
+        options_kwargs["setting_sources"] = effective_setting_sources
+        print(f"   - Setting sources: {', '.join(effective_setting_sources)}")
 
     return ClaudeSDKClient(options=ClaudeAgentOptions(**options_kwargs))

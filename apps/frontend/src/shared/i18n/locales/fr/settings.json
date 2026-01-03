@@ -184,8 +184,15 @@
     "general": {
       "title": "Général",
       "description": "Auto-Build et configuration de l'agent",
-      "useClaudeMd": "Utiliser CLAUDE.md",
-      "useClaudeMdDescription": "Inclure les instructions CLAUDE.md dans le contexte de l'agent"
+      "claudeMdSources": "Sources CLAUDE.md",
+      "claudeMdSourcesDescription": "Charger les instructions CLAUDE.md dans le contexte de l'agent",
+      "claudeMdUser": "Utilisateur (~/.claude/CLAUDE.md)",
+      "claudeMdProject": "Projet (CLAUDE.md)",
+      "claudeSettingSources": "Paramètres SDK Claude",
+      "claudeSettingSourcesDescription": "Charger les skills, hooks et commandes des répertoires Claude",
+      "settingSourceUser": "Utilisateur (~/.claude/)",
+      "settingSourceProject": "Projet (.claude/)",
+      "settingSourceLocal": "Local (.claude/settings.local.json)"
     },
     "claude": {
       "title": "Auth Claude",

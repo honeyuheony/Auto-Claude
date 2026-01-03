@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { Checkbox } from '../ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -21,7 +22,9 @@ import { AVAILABLE_MODELS } from '../../../shared/constants';
 import type {
   Project,
   ProjectSettings as ProjectSettingsType,
-  AutoBuildVersionInfo
+  AutoBuildVersionInfo,
+  ClaudeMdSource,
+  ClaudeSettingSource
 } from '../../../shared/types';
 
 interface GeneralSettingsProps {
@@ -130,21 +133,112 @@ export function GeneralSettings({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-center justify-between pt-2">
+            {/* CLAUDE.md Sources */}
+            <div className="space-y-3 pt-2">
               <div className="space-y-0.5">
                 <Label className="font-normal text-foreground">
-                  {t('projectSections.general.useClaudeMd')}
+                  {t('projectSections.general.claudeMdSources')}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  {t('projectSections.general.useClaudeMdDescription')}
+                  {t('projectSections.general.claudeMdSourcesDescription')}
                 </p>
               </div>
-              <Switch
-                checked={settings.useClaudeMd ?? true}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, useClaudeMd: checked })
-                }
-              />
+              <div className="flex flex-col gap-2 pl-1">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="claudeMd-user"
+                    checked={settings.claudeMdSources?.includes('user') ?? false}
+                    onCheckedChange={(checked) => {
+                      const current = settings.claudeMdSources ?? [];
+                      const newSources = checked
+                        ? [...current.filter(s => s !== 'user'), 'user'] as ClaudeMdSource[]
+                        : current.filter(s => s !== 'user') as ClaudeMdSource[];
+                      setSettings({ ...settings, claudeMdSources: newSources.length > 0 ? newSources : undefined });
+                    }}
+                  />
+                  <Label htmlFor="claudeMd-user" className="text-sm font-normal cursor-pointer">
+                    {t('projectSections.general.claudeMdUser')}
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="claudeMd-project"
+                    checked={settings.claudeMdSources?.includes('project') ?? false}
+                    onCheckedChange={(checked) => {
+                      const current = settings.claudeMdSources ?? [];
+                      const newSources = checked
+                        ? [...current.filter(s => s !== 'project'), 'project'] as ClaudeMdSource[]
+                        : current.filter(s => s !== 'project') as ClaudeMdSource[];
+                      setSettings({ ...settings, claudeMdSources: newSources.length > 0 ? newSources : undefined });
+                    }}
+                  />
+                  <Label htmlFor="claudeMd-project" className="text-sm font-normal cursor-pointer">
+                    {t('projectSections.general.claudeMdProject')}
+                  </Label>
+                </div>
+              </div>
+            </div>
+
+            {/* Claude Setting Sources (Skills, Hooks, Commands) */}
+            <div className="space-y-3 pt-2">
+              <div className="space-y-0.5">
+                <Label className="font-normal text-foreground">
+                  {t('projectSections.general.claudeSettingSources')}
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  {t('projectSections.general.claudeSettingSourcesDescription')}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 pl-1">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="settingSources-user"
+                    checked={settings.claudeSettingSources?.includes('user') ?? false}
+                    onCheckedChange={(checked) => {
+                      const current = settings.claudeSettingSources ?? [];
+                      const newSources = checked
+                        ? [...current.filter(s => s !== 'user'), 'user'] as ClaudeSettingSource[]
+                        : current.filter(s => s !== 'user') as ClaudeSettingSource[];
+                      setSettings({ ...settings, claudeSettingSources: newSources.length > 0 ? newSources : undefined });
+                    }}
+                  />
+                  <Label htmlFor="settingSources-user" className="text-sm font-normal cursor-pointer">
+                    {t('projectSections.general.settingSourceUser')}
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="settingSources-project"
+                    checked={settings.claudeSettingSources?.includes('project') ?? false}
+                    onCheckedChange={(checked) => {
+                      const current = settings.claudeSettingSources ?? [];
+                      const newSources = checked
+                        ? [...current.filter(s => s !== 'project'), 'project'] as ClaudeSettingSource[]
+                        : current.filter(s => s !== 'project') as ClaudeSettingSource[];
+                      setSettings({ ...settings, claudeSettingSources: newSources.length > 0 ? newSources : undefined });
+                    }}
+                  />
+                  <Label htmlFor="settingSources-project" className="text-sm font-normal cursor-pointer">
+                    {t('projectSections.general.settingSourceProject')}
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="settingSources-local"
+                    checked={settings.claudeSettingSources?.includes('local') ?? false}
+                    onCheckedChange={(checked) => {
+                      const current = settings.claudeSettingSources ?? [];
+                      const newSources = checked
+                        ? [...current.filter(s => s !== 'local'), 'local'] as ClaudeSettingSource[]
+                        : current.filter(s => s !== 'local') as ClaudeSettingSource[];
+                      setSettings({ ...settings, claudeSettingSources: newSources.length > 0 ? newSources : undefined });
+                    }}
+                  />
+                  <Label htmlFor="settingSources-local" className="text-sm font-normal cursor-pointer">
+                    {t('projectSections.general.settingSourceLocal')}
+                  </Label>
+                </div>
+              </div>
             </div>
           </section>
 

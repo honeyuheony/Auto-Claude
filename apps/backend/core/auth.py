@@ -373,7 +373,8 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
     """
     Get SDK environment variables with automatic fallback on Antigravity failure.
 
-    If Antigravity is requested but unavailable, falls back to OAuth.
+    If Antigravity is requested but unavailable, attempts to start the proxy
+    automatically, then falls back to OAuth if startup fails.
 
     Args:
         provider: Requested auth provider ("oauth" or "antigravity")
@@ -385,11 +386,142 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
         # Check if Antigravity proxy is available
         if check_antigravity_health():
             return get_sdk_env_vars_for_provider("antigravity"), "antigravity"
-        else:
-            logger.warning(
-                "Antigravity proxy unavailable, falling back to OAuth. "
-                f"Check if proxy is running at {get_antigravity_base_url()}"
-            )
-            return get_sdk_env_vars_for_provider("oauth"), "oauth"
+
+        # Try to auto-start the proxy if enabled
+        if is_antigravity_autostart_enabled():
+            logger.info("Antigravity proxy not running. Attempting auto-start...")
+            if start_antigravity_proxy():
+                # Verify it's now running
+                if check_antigravity_health():
+                    logger.info("Antigravity proxy started successfully")
+                    return get_sdk_env_vars_for_provider("antigravity"), "antigravity"
+                else:
+                    logger.warning("Antigravity proxy started but health check failed")
+
+        # Fall back to OAuth
+        logger.warning(
+            "Antigravity proxy unavailable, falling back to OAuth. "
+            f"Check if proxy is running at {get_antigravity_base_url()}"
+        )
+        return get_sdk_env_vars_for_provider("oauth"), "oauth"
 
     return get_sdk_env_vars_for_provider(provider), provider
+
+
+# =============================================================================
+# Antigravity Proxy Auto-Start
+# =============================================================================
+
+# Global flag to track if we've already started the proxy in this process
+_ANTIGRAVITY_PROXY_STARTED = False
+_ANTIGRAVITY_PROXY_PROCESS: subprocess.Popen | None = None
+
+
+def is_antigravity_autostart_enabled() -> bool:
+    """
+    Check if Antigravity proxy auto-start is enabled.
+
+    Set ANTIGRAVITY_AUTOSTART=true to enable automatic proxy startup.
+    """
+    return os.environ.get("ANTIGRAVITY_AUTOSTART", "").lower() in ("true", "1", "yes")
+
+
+def start_antigravity_proxy(timeout: float = 10.0) -> bool:
+    """
+    Start the Antigravity proxy server in the background.
+
+    Uses 'npx antigravity-claude-proxy start' to launch the proxy.
+    The proxy runs as a background process and is automatically terminated
+    when the Python process exits.
+
+    Args:
+        timeout: Maximum time to wait for proxy to become healthy (seconds)
+
+    Returns:
+        True if proxy started successfully, False otherwise
+    """
+    global _ANTIGRAVITY_PROXY_STARTED, _ANTIGRAVITY_PROXY_PROCESS
+
+    # Don't start multiple times
+    if _ANTIGRAVITY_PROXY_STARTED and _ANTIGRAVITY_PROXY_PROCESS:
+        # Check if still running
+        if _ANTIGRAVITY_PROXY_PROCESS.poll() is None:
+            return True
+        # Process died, reset flags
+        _ANTIGRAVITY_PROXY_STARTED = False
+        _ANTIGRAVITY_PROXY_PROCESS = None
+
+    try:
+        import shutil
+        import time
+        import atexit
+
+        # Check if npx is available
+        npx_path = shutil.which("npx")
+        if not npx_path:
+            logger.warning("npx not found in PATH. Cannot auto-start Antigravity proxy.")
+            return False
+
+        # Start the proxy in background
+        logger.info("Starting Antigravity proxy with 'npx antigravity-claude-proxy start'...")
+
+        # Use subprocess to start in background
+        _ANTIGRAVITY_PROXY_PROCESS = subprocess.Popen(
+            ["npx", "antigravity-claude-proxy", "start"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,  # Detach from parent process group
+        )
+
+        # Register cleanup handler
+        def cleanup_proxy():
+            global _ANTIGRAVITY_PROXY_PROCESS
+            if _ANTIGRAVITY_PROXY_PROCESS and _ANTIGRAVITY_PROXY_PROCESS.poll() is None:
+                logger.debug("Terminating Antigravity proxy...")
+                _ANTIGRAVITY_PROXY_PROCESS.terminate()
+                try:
+                    _ANTIGRAVITY_PROXY_PROCESS.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    _ANTIGRAVITY_PROXY_PROCESS.kill()
+
+        atexit.register(cleanup_proxy)
+
+        # Wait for proxy to become healthy
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if check_antigravity_health(timeout=1.0):
+                _ANTIGRAVITY_PROXY_STARTED = True
+                return True
+            time.sleep(0.5)
+
+        # Timeout - proxy didn't start in time
+        logger.warning(f"Antigravity proxy did not become healthy within {timeout}s")
+        return False
+
+    except Exception as e:
+        logger.error(f"Failed to start Antigravity proxy: {e}")
+        return False
+
+
+def stop_antigravity_proxy() -> bool:
+    """
+    Stop the Antigravity proxy if it was started by this process.
+
+    Returns:
+        True if stopped successfully, False otherwise
+    """
+    global _ANTIGRAVITY_PROXY_STARTED, _ANTIGRAVITY_PROXY_PROCESS
+
+    if not _ANTIGRAVITY_PROXY_PROCESS:
+        return True
+
+    try:
+        if _ANTIGRAVITY_PROXY_PROCESS.poll() is None:
+            _ANTIGRAVITY_PROXY_PROCESS.terminate()
+            _ANTIGRAVITY_PROXY_PROCESS.wait(timeout=5)
+        _ANTIGRAVITY_PROXY_STARTED = False
+        _ANTIGRAVITY_PROXY_PROCESS = None
+        return True
+    except Exception as e:
+        logger.error(f"Failed to stop Antigravity proxy: {e}")
+        return False

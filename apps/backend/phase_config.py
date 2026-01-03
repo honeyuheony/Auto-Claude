@@ -475,6 +475,58 @@ def is_antigravity_enabled() -> bool:
     return bool(os.environ.get("ANTIGRAVITY_BASE_URL"))
 
 
+# =============================================================================
+# Setting Sources Configuration
+# =============================================================================
+
+# Valid setting sources for Claude Agent SDK
+VALID_SETTING_SOURCES = ["user", "project", "local"]
+
+
+def get_setting_sources() -> list[str] | None:
+    """
+    Get the setting sources configuration for Claude Agent SDK.
+
+    Setting sources control which filesystem-based settings are loaded:
+    - "user": Load from ~/.claude/ (skills, hooks, commands, settings.json)
+    - "project": Load from .claude/ in project (CLAUDE.md, settings.json)
+    - "local": Load from .claude/settings.local.json
+
+    Environment variable: CLAUDE_SETTING_SOURCES (comma-separated)
+    Examples:
+        CLAUDE_SETTING_SOURCES=user,project  # Load user and project settings
+        CLAUDE_SETTING_SOURCES=project       # Load project settings only
+        CLAUDE_SETTING_SOURCES=              # Disable filesystem settings (default)
+
+    Returns:
+        List of setting sources, or None if disabled
+    """
+    env_value = os.environ.get("CLAUDE_SETTING_SOURCES", "").strip()
+
+    if not env_value:
+        return None
+
+    # Parse comma-separated list
+    sources = [s.strip().lower() for s in env_value.split(",") if s.strip()]
+
+    # Validate sources
+    valid_sources = [s for s in sources if s in VALID_SETTING_SOURCES]
+
+    if not valid_sources:
+        return None
+
+    # Warn about invalid sources
+    invalid_sources = [s for s in sources if s not in VALID_SETTING_SOURCES]
+    if invalid_sources:
+        import logging
+        logging.warning(
+            f"Invalid setting sources ignored: {invalid_sources}. "
+            f"Valid values: {VALID_SETTING_SOURCES}"
+        )
+
+    return valid_sources
+
+
 def get_full_phase_config(
     spec_dir: Path,
     phase: Phase,

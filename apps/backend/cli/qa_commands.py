@@ -76,6 +76,7 @@ def handle_qa_command(
     spec_dir: Path,
     model: str,
     verbose: bool = False,
+    auth_provider: str | None = None,
 ) -> None:
     """
     Handle the --qa command (run QA validation loop).
@@ -85,11 +86,18 @@ def handle_qa_command(
         spec_dir: Spec directory path
         model: Model to use for QA
         verbose: Enable verbose output
+        auth_provider: Auth provider override (oauth, antigravity, or None for auto)
     """
+    import os
+
     print_banner()
     print(f"\nRunning QA validation for: {spec_dir.name}")
     if not validate_environment(spec_dir):
         sys.exit(1)
+
+    # Set auth provider as environment variable for downstream use
+    if auth_provider:
+        os.environ["CLI_AUTH_PROVIDER_OVERRIDE"] = auth_provider
 
     # Check if there's pending human feedback that needs to be processed
     # Human feedback takes priority over "already approved" status

@@ -80,6 +80,9 @@ Environment Variables:
   CLAUDE_CODE_OAUTH_TOKEN  Your Claude Code OAuth token (required)
                            Get it by running: claude setup-token
   AUTO_BUILD_MODEL         Override default model (optional)
+  ANTIGRAVITY_BASE_URL     Antigravity proxy URL (default: http://localhost:8080)
+  AUTH_PROVIDER_<PHASE>    Override auth provider per phase (oauth/antigravity)
+                           e.g., AUTH_PROVIDER_CODING=antigravity
         """,
     )
 
@@ -231,6 +234,26 @@ Environment Variables:
         help="Base branch for creating worktrees (default: auto-detect or current branch)",
     )
 
+    # Auth provider options
+    auth_group = parser.add_mutually_exclusive_group()
+    auth_group.add_argument(
+        "--force-oauth",
+        action="store_true",
+        help="Force OAuth authentication for all phases (quality priority)",
+    )
+    auth_group.add_argument(
+        "--force-antigravity",
+        action="store_true",
+        help="Force Antigravity proxy for all phases (cost optimization)",
+    )
+    parser.add_argument(
+        "--auth-provider",
+        type=str,
+        choices=["oauth", "antigravity", "auto"],
+        default="auto",
+        help="Auth provider: oauth (direct API), antigravity (proxy), auto (phase-based)",
+    )
+
     # Batch task management
     parser.add_argument(
         "--batch-create",
@@ -279,6 +302,17 @@ def main() -> None:
     # Get model from CLI arg or env var (None if not explicitly set)
     # This allows get_phase_model() to fall back to task_metadata.json
     model = args.model or os.environ.get("AUTO_BUILD_MODEL")
+
+    # Determine auth provider from CLI flags
+    # Priority: --force-oauth/--force-antigravity > --auth-provider > auto
+    if args.force_oauth:
+        auth_provider = "oauth"
+    elif args.force_antigravity:
+        auth_provider = "antigravity"
+    elif args.auth_provider != "auto":
+        auth_provider = args.auth_provider
+    else:
+        auth_provider = None  # Let phase_config decide based on phase
 
     # Handle --list command
     if args.list:
@@ -380,6 +414,7 @@ def main() -> None:
             spec_dir=spec_dir,
             model=model,
             verbose=args.verbose,
+            auth_provider=auth_provider,
         )
         return
 
@@ -390,6 +425,7 @@ def main() -> None:
             spec_dir=spec_dir,
             model=model,
             verbose=args.verbose,
+            auth_provider=auth_provider,
         )
         return
 
@@ -406,6 +442,7 @@ def main() -> None:
         skip_qa=args.skip_qa,
         force_bypass_approval=args.force,
         base_branch=args.base_branch,
+        auth_provider=auth_provider,
     )
 
 

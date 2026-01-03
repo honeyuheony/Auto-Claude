@@ -221,6 +221,7 @@ def handle_followup_command(
     spec_dir: Path,
     model: str,
     verbose: bool = False,
+    auth_provider: str | None = None,
 ) -> None:
     """
     Handle the --followup command.
@@ -230,11 +231,18 @@ def handle_followup_command(
         spec_dir: Spec directory path
         model: Model to use
         verbose: Enable verbose output
+        auth_provider: Auth provider override (oauth, antigravity, or None for auto)
     """
+    import os
+
     # Lazy imports to avoid loading heavy modules
     from agent import run_followup_planner
 
     from .utils import print_banner, validate_environment
+
+    # Set auth provider as environment variable for downstream use
+    if auth_provider:
+        os.environ["CLI_AUTH_PROVIDER_OVERRIDE"] = auth_provider
 
     print_banner()
     print(f"\nFollow-up request for: {spec_dir.name}")

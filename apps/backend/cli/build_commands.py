@@ -61,6 +61,7 @@ def handle_build_command(
     skip_qa: bool,
     force_bypass_approval: bool,
     base_branch: str | None = None,
+    auth_provider: str | None = None,
 ) -> None:
     """
     Handle the main build command.
@@ -77,7 +78,10 @@ def handle_build_command(
         skip_qa: Skip automatic QA validation
         force_bypass_approval: Force bypass approval check
         base_branch: Base branch for worktree creation (default: current branch)
+        auth_provider: Auth provider override (oauth, antigravity, or None for auto)
     """
+    import os
+
     # Lazy imports to avoid loading heavy modules
     from agent import run_autonomous_agent, sync_plan_to_source
     from debug import (
@@ -90,6 +94,13 @@ def handle_build_command(
     from qa_loop import run_qa_validation_loop, should_run_qa
 
     from .utils import print_banner, validate_environment
+
+    # Set auth provider as environment variable for downstream use
+    # This allows create_client() to pick it up via get_agent_auth_provider()
+    if auth_provider:
+        # Set a global override that phase_config will check
+        os.environ["CLI_AUTH_PROVIDER_OVERRIDE"] = auth_provider
+        debug("run.py", f"Auth provider override set: {auth_provider}")
 
     # Get the resolved model for the planning phase (first phase of build)
     # This respects task_metadata.json phase configuration from the UI

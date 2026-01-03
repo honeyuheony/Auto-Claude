@@ -4,12 +4,19 @@ Authentication helpers for Auto Claude.
 Provides centralized authentication token resolution with fallback support
 for multiple environment variables, and SDK environment variable passthrough
 for custom API endpoints.
+
+Dual Auth Support:
+- OAuth: Claude Code OAuth token for high-quality phases
+- Antigravity: Proxy-based authentication for cost optimization
 """
 
 import json
+import logging
 import os
 import platform
 import subprocess
+
+logger = logging.getLogger(__name__)
 
 # Priority order for auth token resolution
 # NOTE: We intentionally do NOT fall back to ANTHROPIC_API_KEY.
@@ -246,3 +253,143 @@ def ensure_claude_code_oauth_token() -> None:
     token = get_auth_token()
     if token:
         os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = token
+
+
+# =============================================================================
+# Antigravity Proxy Support
+# =============================================================================
+
+# Default Antigravity proxy settings
+DEFAULT_ANTIGRAVITY_BASE_URL = "http://localhost:8080"
+DEFAULT_ANTIGRAVITY_AUTH_TOKEN = "test"
+
+
+def get_antigravity_base_url() -> str:
+    """Get the Antigravity proxy base URL."""
+    return os.environ.get("ANTIGRAVITY_BASE_URL", DEFAULT_ANTIGRAVITY_BASE_URL)
+
+
+def get_antigravity_auth_token() -> str:
+    """Get the Antigravity proxy auth token."""
+    return os.environ.get("ANTIGRAVITY_AUTH_TOKEN", DEFAULT_ANTIGRAVITY_AUTH_TOKEN)
+
+
+def check_antigravity_health(timeout: float = 2.0) -> bool:
+    """
+    Check if Antigravity proxy is running and healthy.
+
+    Args:
+        timeout: Request timeout in seconds
+
+    Returns:
+        True if proxy is healthy, False otherwise
+    """
+    try:
+        import httpx
+
+        base_url = get_antigravity_base_url()
+        response = httpx.get(f"{base_url}/health", timeout=timeout)
+        return response.status_code == 200
+    except Exception as e:
+        logger.debug(f"Antigravity health check failed: {e}")
+        return False
+
+
+def get_antigravity_account_limits(timeout: float = 5.0) -> dict | None:
+    """
+    Get Antigravity proxy account limits and quota information.
+
+    Args:
+        timeout: Request timeout in seconds
+
+    Returns:
+        Dict with account limits or None if unavailable
+    """
+    try:
+        import httpx
+
+        base_url = get_antigravity_base_url()
+        response = httpx.get(f"{base_url}/account-limits", timeout=timeout)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        logger.debug(f"Failed to get Antigravity account limits: {e}")
+    return None
+
+
+def get_auth_config(provider: str) -> dict[str, str]:
+    """
+    Get authentication configuration for a specific provider.
+
+    Args:
+        provider: Auth provider ("oauth" or "antigravity")
+
+    Returns:
+        Dict of auth configuration values
+    """
+    if provider == "antigravity":
+        return {
+            "ANTHROPIC_BASE_URL": get_antigravity_base_url(),
+            "ANTHROPIC_AUTH_TOKEN": get_antigravity_auth_token(),
+        }
+    else:  # oauth
+        return {
+            "CLAUDE_CODE_OAUTH_TOKEN": require_auth_token(),
+        }
+
+
+def get_sdk_env_vars_for_provider(provider: str) -> dict[str, str]:
+    """
+    Get SDK environment variables configured for a specific auth provider.
+
+    For OAuth: Uses Claude Code OAuth token with default Anthropic API
+    For Antigravity: Routes through proxy with ANTHROPIC_BASE_URL override
+
+    Args:
+        provider: Auth provider ("oauth" or "antigravity")
+
+    Returns:
+        Dict of environment variables to pass to SDK subprocess
+    """
+    # Start with base SDK env vars
+    base_env = get_sdk_env_vars()
+
+    if provider == "antigravity":
+        # Configure for Antigravity proxy
+        base_env["ANTHROPIC_BASE_URL"] = get_antigravity_base_url()
+        base_env["ANTHROPIC_AUTH_TOKEN"] = get_antigravity_auth_token()
+        # Remove OAuth token - proxy handles auth
+        base_env.pop("CLAUDE_CODE_OAUTH_TOKEN", None)
+    else:  # oauth
+        # Configure for direct Anthropic API with OAuth
+        # Remove any base URL override to use default API
+        base_env.pop("ANTHROPIC_BASE_URL", None)
+        base_env["CLAUDE_CODE_OAUTH_TOKEN"] = require_auth_token()
+
+    return base_env
+
+
+def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
+    """
+    Get SDK environment variables with automatic fallback on Antigravity failure.
+
+    If Antigravity is requested but unavailable, falls back to OAuth.
+
+    Args:
+        provider: Requested auth provider ("oauth" or "antigravity")
+
+    Returns:
+        Tuple of (env_vars_dict, actual_provider_used)
+    """
+    if provider == "antigravity":
+        # Check if Antigravity proxy is available
+        if check_antigravity_health():
+            return get_sdk_env_vars_for_provider("antigravity"), "antigravity"
+        else:
+            logger.warning(
+                "Antigravity proxy unavailable, falling back to OAuth. "
+                f"Check if proxy is running at {get_antigravity_base_url()}"
+            )
+            return get_sdk_env_vars_for_provider("oauth"), "oauth"
+
+    return get_sdk_env_vars_for_provider(provider), provider

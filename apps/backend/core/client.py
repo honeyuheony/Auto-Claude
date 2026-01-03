@@ -133,7 +133,12 @@ from agents.tools_pkg import (
 )
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 from claude_agent_sdk.types import HookMatcher
-from core.auth import get_sdk_env_vars, require_auth_token
+from core.auth import (
+    get_sdk_env_vars,
+    get_sdk_env_vars_with_fallback,
+    require_auth_token,
+)
+from phase_config import get_agent_auth_provider
 from linear_updater import is_linear_enabled
 from prompts_pkg.project_context import detect_project_capabilities, load_project_index
 from security import bash_security_hook
@@ -441,6 +446,7 @@ def create_client(
     max_thinking_tokens: int | None = None,
     output_format: dict | None = None,
     agents: dict | None = None,
+    auth_provider: str | None = None,
 ) -> ClaudeSDKClient:
     """
     Create a Claude Agent SDK client with multi-layered security.
@@ -467,6 +473,9 @@ def create_client(
                Format: {"agent-name": {"description": "...", "prompt": "...",
                         "tools": [...], "model": "inherit"}}
                See: https://platform.claude.com/docs/en/agent-sdk/subagents
+        auth_provider: Auth provider to use ("oauth" or "antigravity").
+                      If None, determined automatically based on agent_type and phase config.
+                      "antigravity" routes requests through Antigravity proxy for cost savings.
 
     Returns:
         Configured ClaudeSDKClient
@@ -481,12 +490,17 @@ def create_client(
        (see security.py for ALLOWED_COMMANDS)
     4. Tool filtering - Each agent type only sees relevant tools (prevents misuse)
     """
-    oauth_token = require_auth_token()
-    # Ensure SDK can access it via its expected env var
-    os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = oauth_token
+    # Determine auth provider if not specified
+    if auth_provider is None:
+        auth_provider = get_agent_auth_provider(spec_dir, agent_type)
 
-    # Collect env vars to pass to SDK (ANTHROPIC_BASE_URL, etc.)
-    sdk_env = get_sdk_env_vars()
+    # Get SDK env vars with fallback (Antigravity -> OAuth if proxy unavailable)
+    sdk_env, actual_provider = get_sdk_env_vars_with_fallback(auth_provider)
+
+    # For OAuth, also ensure the token is set in os.environ for SDK compatibility
+    if actual_provider == "oauth":
+        oauth_token = require_auth_token()
+        os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = oauth_token
 
     # Check if Linear integration is enabled
     linear_enabled = is_linear_enabled()
@@ -597,6 +611,13 @@ def create_client(
     print("   - Sandbox enabled (OS-level bash isolation)")
     print(f"   - Filesystem restricted to: {project_dir.resolve()}")
     print("   - Bash commands restricted to allowlist")
+    # Display auth provider info
+    if actual_provider == "antigravity":
+        from core.auth import get_antigravity_base_url
+
+        print(f"   - Auth provider: antigravity ({get_antigravity_base_url()})")
+    else:
+        print("   - Auth provider: oauth (Anthropic API)")
     if max_thinking_tokens:
         print(f"   - Extended thinking: {max_thinking_tokens:,} tokens")
     else:

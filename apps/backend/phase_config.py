@@ -2,8 +2,12 @@
 Phase Configuration Module
 ===========================
 
-Handles model and thinking level configuration for different execution phases.
+Handles model, thinking level, and auth provider configuration for different execution phases.
 Reads configuration from task_metadata.json and provides resolved model IDs.
+
+Auth Provider Support:
+- oauth: Uses Claude Code OAuth token (default for high-quality phases)
+- antigravity: Uses Antigravity proxy for cost optimization (default for coding phases)
 """
 
 import json
@@ -62,6 +66,35 @@ DEFAULT_PHASE_THINKING: dict[str, str] = {
     "qa": "high",
 }
 
+# Default Auth Provider per phase
+# oauth: Claude Code OAuth token (high-quality, uses API quota)
+# antigravity: Antigravity proxy (cost-free, uses Gemini models via proxy)
+DEFAULT_PHASE_AUTH_PROVIDERS: dict[str, str] = {
+    "spec": "oauth",  # Quality critical - ultrathink phases
+    "planning": "oauth",  # High reasoning needed
+    "coding": "antigravity",  # Routine work - cost optimization
+    "qa": "oauth",  # Quality validation critical
+}
+
+# Default Auth Provider per agent type
+# Maps agent types to their default auth provider
+DEFAULT_AGENT_AUTH_PROVIDERS: dict[str, str] = {
+    "planner": "oauth",
+    "coder": "antigravity",
+    "qa_reviewer": "oauth",
+    "qa_fixer": "oauth",
+    # Utility agents - use antigravity for cost savings
+    "commit_message": "antigravity",
+    "insights": "antigravity",
+    "merge_resolver": "antigravity",
+    # Spec agents - quality critical
+    "spec_gatherer": "oauth",
+    "spec_researcher": "oauth",
+    "spec_writer": "oauth",
+    "spec_critic": "oauth",
+    "complexity_assessor": "oauth",
+}
+
 
 class PhaseModelConfig(TypedDict, total=False):
     spec: str
@@ -77,17 +110,27 @@ class PhaseThinkingConfig(TypedDict, total=False):
     qa: str
 
 
+class PhaseAuthProviderConfig(TypedDict, total=False):
+    spec: str
+    planning: str
+    coding: str
+    qa: str
+
+
 class TaskMetadataConfig(TypedDict, total=False):
     """Structure of model-related fields in task_metadata.json"""
 
     isAutoProfile: bool
     phaseModels: PhaseModelConfig
     phaseThinking: PhaseThinkingConfig
+    phaseAuthProviders: PhaseAuthProviderConfig
     model: str
     thinkingLevel: str
+    authProvider: str  # Global auth provider override
 
 
 Phase = Literal["spec", "planning", "coding", "qa"]
+AuthProvider = Literal["oauth", "antigravity"]
 
 
 def resolve_model_id(model: str) -> str:
@@ -317,3 +360,144 @@ def get_spec_phase_thinking_budget(phase_name: str) -> int | None:
     """
     thinking_level = SPEC_PHASE_THINKING_LEVELS.get(phase_name, "medium")
     return get_thinking_budget(thinking_level)
+
+
+# =============================================================================
+# Auth Provider Configuration
+# =============================================================================
+
+
+def get_phase_auth_provider(
+    spec_dir: Path,
+    phase: Phase,
+    cli_auth_provider: str | None = None,
+) -> str:
+    """
+    Get the auth provider for a specific execution phase.
+
+    Priority:
+    1. CLI argument (if provided)
+    2. CLI global override (CLI_AUTH_PROVIDER_OVERRIDE env var)
+    3. Environment variable override (AUTH_PROVIDER_<PHASE>)
+    4. Phase-specific config from task_metadata.json (if auto profile)
+    5. Single auth provider from task_metadata.json (if not auto profile)
+    6. Default phase configuration
+
+    Args:
+        spec_dir: Path to the spec directory
+        phase: Execution phase (spec, planning, coding, qa)
+        cli_auth_provider: Auth provider from CLI argument (optional)
+
+    Returns:
+        Auth provider string ("oauth" or "antigravity")
+    """
+    # CLI argument takes precedence
+    if cli_auth_provider:
+        return cli_auth_provider
+
+    # CLI global override (from --force-oauth/--force-antigravity flags)
+    cli_global_override = os.environ.get("CLI_AUTH_PROVIDER_OVERRIDE")
+    if cli_global_override:
+        return cli_global_override
+
+    # Environment variable override (e.g., AUTH_PROVIDER_CODING=antigravity)
+    env_override = os.environ.get(f"AUTH_PROVIDER_{phase.upper()}")
+    if env_override:
+        return env_override
+
+    # Load task metadata
+    metadata = load_task_metadata(spec_dir)
+
+    if metadata:
+        # Check for auto profile with phase-specific config
+        if metadata.get("isAutoProfile") and metadata.get("phaseAuthProviders"):
+            phase_auth = metadata["phaseAuthProviders"]
+            return phase_auth.get(phase, DEFAULT_PHASE_AUTH_PROVIDERS[phase])
+
+        # Non-auto profile: use single auth provider
+        if metadata.get("authProvider"):
+            return metadata["authProvider"]
+
+    # Fall back to default phase configuration
+    return DEFAULT_PHASE_AUTH_PROVIDERS[phase]
+
+
+def get_agent_auth_provider(
+    spec_dir: Path,
+    agent_type: str,
+    cli_auth_provider: str | None = None,
+) -> str:
+    """
+    Get the auth provider for a specific agent type.
+
+    Maps agent types to their corresponding phase, then uses phase auth provider logic.
+
+    Args:
+        spec_dir: Path to the spec directory
+        agent_type: Agent type (e.g., 'coder', 'planner', 'qa_reviewer')
+        cli_auth_provider: Auth provider from CLI argument (optional)
+
+    Returns:
+        Auth provider string ("oauth" or "antigravity")
+    """
+    # CLI argument takes precedence
+    if cli_auth_provider:
+        return cli_auth_provider
+
+    # Map agent type to phase for phase-based lookup
+    agent_to_phase: dict[str, Phase] = {
+        "planner": "planning",
+        "coder": "coding",
+        "qa_reviewer": "qa",
+        "qa_fixer": "qa",
+        "spec_gatherer": "spec",
+        "spec_researcher": "spec",
+        "spec_writer": "spec",
+        "spec_critic": "spec",
+        "complexity_assessor": "spec",
+    }
+
+    # If agent type maps to a phase, use phase-based lookup
+    if agent_type in agent_to_phase:
+        phase = agent_to_phase[agent_type]
+        return get_phase_auth_provider(spec_dir, phase, cli_auth_provider)
+
+    # For utility agents not mapped to a phase, use agent-specific default
+    return DEFAULT_AGENT_AUTH_PROVIDERS.get(agent_type, "oauth")
+
+
+def is_antigravity_enabled() -> bool:
+    """
+    Check if Antigravity proxy is configured.
+
+    Returns True if ANTIGRAVITY_BASE_URL is set in environment.
+    """
+    return bool(os.environ.get("ANTIGRAVITY_BASE_URL"))
+
+
+def get_full_phase_config(
+    spec_dir: Path,
+    phase: Phase,
+    cli_model: str | None = None,
+    cli_thinking: str | None = None,
+    cli_auth_provider: str | None = None,
+) -> tuple[str, str, int | None, str]:
+    """
+    Get the full configuration for a specific execution phase including auth provider.
+
+    Args:
+        spec_dir: Path to the spec directory
+        phase: Execution phase (spec, planning, coding, qa)
+        cli_model: Model from CLI argument (optional)
+        cli_thinking: Thinking level from CLI argument (optional)
+        cli_auth_provider: Auth provider from CLI argument (optional)
+
+    Returns:
+        Tuple of (model_id, thinking_level, thinking_budget, auth_provider)
+    """
+    model_id = get_phase_model(spec_dir, phase, cli_model)
+    thinking_level = get_phase_thinking(spec_dir, phase, cli_thinking)
+    thinking_budget = get_thinking_budget(thinking_level)
+    auth_provider = get_phase_auth_provider(spec_dir, phase, cli_auth_provider)
+
+    return model_id, thinking_level, thinking_budget, auth_provider

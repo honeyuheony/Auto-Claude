@@ -12,6 +12,12 @@ export interface Project {
   updatedAt: Date;
 }
 
+/** Sources for loading CLAUDE.md files */
+export type ClaudeMdSource = 'user' | 'project';
+
+/** Sources for loading Claude SDK settings (skills, hooks, commands) */
+export type ClaudeSettingSource = 'user' | 'project' | 'local';
+
 export interface ProjectSettings {
   model: string;
   memoryBackend: 'graphiti' | 'file';
@@ -24,7 +30,22 @@ export interface ProjectSettings {
   graphitiMcpUrl?: string;
   /** Main branch name for worktree creation (default: auto-detected or 'main') */
   mainBranch?: string;
-  /** Include CLAUDE.md instructions in agent system prompt (default: true) */
+  /**
+   * CLAUDE.md sources to load into agent system prompt.
+   * - 'user': Load from ~/.claude/CLAUDE.md
+   * - 'project': Load from project's CLAUDE.md
+   * - undefined/empty: Disabled (default)
+   */
+  claudeMdSources?: ClaudeMdSource[];
+  /**
+   * Claude SDK setting sources to load (skills, hooks, commands).
+   * - 'user': Load from ~/.claude/
+   * - 'project': Load from .claude/ in project
+   * - 'local': Load from .claude/settings.local.json
+   * - undefined/empty: SDK isolation mode (default)
+   */
+  claudeSettingSources?: ClaudeSettingSource[];
+  /** @deprecated Use claudeMdSources instead. Kept for backward compatibility. */
   useClaudeMd?: boolean;
 }
 

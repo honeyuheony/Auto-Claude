@@ -414,28 +414,80 @@ def get_electron_debug_port() -> int:
     return int(os.environ.get("ELECTRON_DEBUG_PORT", "9222"))
 
 
-def should_use_claude_md() -> bool:
-    """Check if CLAUDE.md instructions should be included in system prompt."""
-    return os.environ.get("USE_CLAUDE_MD", "").lower() == "true"
-
-
-def load_claude_md(project_dir: Path) -> str | None:
+def get_claude_md_sources() -> list[str]:
     """
-    Load CLAUDE.md content from project root if it exists.
+    Get which CLAUDE.md sources to load.
+
+    Environment variable: USE_CLAUDE_MD
+    Formats:
+        USE_CLAUDE_MD=true           # Enable both user and project
+        USE_CLAUDE_MD=false          # Disable (default)
+        USE_CLAUDE_MD=user           # Load ~/.claude/CLAUDE.md only
+        USE_CLAUDE_MD=project        # Load project's CLAUDE.md only
+        USE_CLAUDE_MD=user,project   # Load both (same as true)
+
+    Returns:
+        List of sources to load ("user", "project"), or empty list if disabled
+    """
+    env_value = os.environ.get("USE_CLAUDE_MD", "").strip().lower()
+
+    if not env_value or env_value in ("false", "0", "no", "off"):
+        return []
+
+    if env_value in ("true", "1", "yes", "on"):
+        return ["user", "project"]
+
+    # Parse comma-separated list
+    valid_sources = ["user", "project"]
+    sources = [s.strip() for s in env_value.split(",") if s.strip() in valid_sources]
+    return sources
+
+
+def load_claude_md(project_dir: Path) -> tuple[str | None, list[str]]:
+    """
+    Load CLAUDE.md content from configured sources.
 
     Args:
         project_dir: Root directory of the project
 
     Returns:
-        Content of CLAUDE.md if found, None otherwise
+        Tuple of (combined content, list of sources loaded)
     """
-    claude_md_path = project_dir / "CLAUDE.md"
-    if claude_md_path.exists():
-        try:
-            return claude_md_path.read_text(encoding="utf-8")
-        except Exception:
-            return None
-    return None
+    sources = get_claude_md_sources()
+    if not sources:
+        return None, []
+
+    contents = []
+    loaded_from = []
+
+    # Load from ~/.claude/CLAUDE.md (user)
+    if "user" in sources:
+        user_claude_md = Path.home() / ".claude" / "CLAUDE.md"
+        if user_claude_md.exists():
+            try:
+                content = user_claude_md.read_text(encoding="utf-8")
+                if content.strip():
+                    contents.append(f"# User Instructions (~/.claude/CLAUDE.md)\n\n{content}")
+                    loaded_from.append("user")
+            except Exception:
+                pass
+
+    # Load from project's CLAUDE.md
+    if "project" in sources:
+        project_claude_md = project_dir / "CLAUDE.md"
+        if project_claude_md.exists():
+            try:
+                content = project_claude_md.read_text(encoding="utf-8")
+                if content.strip():
+                    contents.append(f"# Project Instructions (CLAUDE.md)\n\n{content}")
+                    loaded_from.append("project")
+            except Exception:
+                pass
+
+    if not contents:
+        return None, []
+
+    return "\n\n---\n\n".join(contents), loaded_from
 
 
 def create_client(
@@ -744,15 +796,14 @@ def create_client(
     )
 
     # Include CLAUDE.md if enabled and present
-    if should_use_claude_md():
-        claude_md_content = load_claude_md(project_dir)
-        if claude_md_content:
-            base_prompt = f"{base_prompt}\n\n# Project Instructions (from CLAUDE.md)\n\n{claude_md_content}"
-            print("   - CLAUDE.md: included in system prompt")
-        else:
-            print("   - CLAUDE.md: not found in project root")
+    claude_md_content, claude_md_sources = load_claude_md(project_dir)
+    if claude_md_content:
+        base_prompt = f"{base_prompt}\n\n{claude_md_content}"
+        print(f"   - CLAUDE.md: loaded from {', '.join(claude_md_sources)}")
+    elif get_claude_md_sources():
+        print("   - CLAUDE.md: enabled but not found")
     else:
-        print("   - CLAUDE.md: disabled by project settings")
+        print("   - CLAUDE.md: disabled")
     print()
 
     # Build options dict, conditionally including output_format

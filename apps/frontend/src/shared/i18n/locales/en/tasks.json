@@ -128,6 +128,60 @@
   "metadata": {
     "severity": "severity"
   },
+  "subtasks": {
+    "empty": {
+      "title": "No subtasks defined",
+      "description": "Implementation subtasks will appear here after planning"
+    },
+    "progress": "{{completed}} of {{total}} completed"
+  },
+  "logs": {
+    "empty": {
+      "title": "No logs yet",
+      "description": "Logs will appear here when the task runs"
+    },
+    "phases": {
+      "planning": "Planning",
+      "coding": "Coding",
+      "validation": "Validation"
+    },
+    "status": {
+      "interrupted": "Interrupted",
+      "running": "Running",
+      "complete": "Complete",
+      "failed": "Failed",
+      "pending": "Pending"
+    },
+    "tools": {
+      "reading": "Reading",
+      "searchingFiles": "Searching files",
+      "searchingCode": "Searching code",
+      "editing": "Editing",
+      "writing": "Writing",
+      "running": "Running",
+      "done": "Done"
+    },
+    "output": {
+      "hideOutput": "Hide output",
+      "showOutput": "Show output",
+      "less": "Less",
+      "more": "More"
+    },
+    "entries": "{{count}} entries",
+    "noLogsYet": "No logs yet"
+  },
+  "models": {
+    "opus": "Opus",
+    "sonnet": "Sonnet",
+    "haiku": "Haiku"
+  },
+  "thinking": {
+    "none": "None",
+    "low": "Low",
+    "medium": "Med",
+    "high": "High",
+    "ultrathink": "Ultra"
+  },
   "edit": {
     "title": "Edit Task",
     "dialogDescription": "Update task details including title, description, classification, images, and settings. Changes will be saved to the spec files.",

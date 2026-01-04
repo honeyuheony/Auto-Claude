@@ -82,7 +82,120 @@
   },
   "memory": {
     "title": "메모리",
-    "description": "Auto Claude 메모리는 코딩 세션 간에 컨텍스트를 기억하는 데 도움을 줍니다"
+    "description": "Auto Claude 메모리는 코딩 세션 간에 컨텍스트를 기억하는 데 도움을 줍니다",
+    "database": {
+      "title": "메모리 데이터베이스",
+      "location": "~/.auto-claude/memories/에 저장됨"
+    },
+    "embeddingProvider": {
+      "label": "임베딩 공급자 (시맨틱 검색용)",
+      "selectModel": "임베딩 모델 선택"
+    },
+    "info": {
+      "title": "메모리는 무엇을 하나요?",
+      "description": "메모리는 코드베이스에 대한 발견, 패턴 및 인사이트를 저장하여 미래 세션이 이미 로드된 컨텍스트로 시작할 수 있게 합니다.",
+      "features": {
+        "patterns": "세션 간 패턴 기억",
+        "codebase": "시간이 지남에 따라 코드베이스 이해",
+        "offline": "오프라인 작동 - 클라우드 불필요"
+      }
+    },
+    "fallbackNote": "임베딩 공급자가 없나요? 메모리는 키워드 검색으로도 작동합니다. 시맨틱 검색은 업그레이드입니다.",
+    "autoCreate": {
+      "title": "데이터베이스가 자동으로 생성됩니다",
+      "description": "메모리는 임베디드 데이터베이스를 사용합니다 - Docker가 필요 없습니다. 메모리 기능을 처음 사용할 때 생성됩니다."
+    }
+  },
+  "graphiti": {
+    "title": "메모리 및 컨텍스트",
+    "description": "코딩 세션 간 영구 메모리를 위해 Graphiti를 활성화하세요",
+    "success": {
+      "title": "Graphiti가 성공적으로 구성되었습니다",
+      "description": "메모리 기능이 활성화되었습니다. Auto Claude가 세션 간에 컨텍스트를 유지하여 코드 이해를 개선합니다."
+    },
+    "reconfigure": "Graphiti 설정 다시 구성",
+    "autoCreate": {
+      "title": "데이터베이스가 자동으로 생성됩니다",
+      "description": "LadybugDB는 임베디드 데이터베이스를 사용합니다 - Docker가 필요 없습니다. 메모리 기능을 처음 사용할 때 데이터베이스가 생성됩니다."
+    },
+    "info": {
+      "title": "Graphiti란 무엇인가요?",
+      "description": "Graphiti는 Auto Claude가 세션 간에 컨텍스트를 기억하는 데 도움을 주는 지능형 메모리 레이어입니다. 지식 그래프를 사용하여 코드베이스에 대한 발견, 패턴 및 인사이트를 저장합니다.",
+      "features": {
+        "persistent": "코딩 세션 간 영구 메모리",
+        "understanding": "시간이 지남에 따라 코드베이스를 더 잘 이해",
+        "repetition": "반복적인 설명 감소",
+        "noDocker": "Docker 불필요 - 임베디드 데이터베이스 사용"
+      }
+    },
+    "learnMore": "Graphiti에 대해 자세히 알아보기",
+    "enable": {
+      "title": "Graphiti 메모리 활성화",
+      "description": "LadybugDB (임베디드) 및 LLM/임베딩 공급자 사용"
+    },
+    "database": {
+      "label": "데이터베이스 이름",
+      "location": "~/.auto-claude/graphs/에 저장됨",
+      "status": {
+        "ready": "준비됨",
+        "issue": "문제"
+      }
+    },
+    "providers": {
+      "llm": "LLM 공급자",
+      "embedding": "임베딩 공급자"
+    },
+    "connection": {
+      "test": "연결 테스트",
+      "testing": "연결 테스트 중...",
+      "success": "모든 연결이 성공적으로 검증되었습니다!",
+      "note": {
+        "validation": "참고: API 키 검증은 현재 OpenAI만 완전히 지원합니다. 키는 저장되어 런타임에 사용됩니다.",
+        "ollama": "참고: Ollama 연결은 서버 접근 가능 여부를 확인하여 테스트됩니다."
+      }
+    },
+    "apiKeys": {
+      "openai": {
+        "label": "OpenAI API 키",
+        "hint": "키 받기:"
+      },
+      "anthropic": {
+        "label": "Anthropic API 키",
+        "hint": "키 받기:"
+      },
+      "voyage": {
+        "label": "Voyage API 키",
+        "hint": "키 받기:"
+      },
+      "google": {
+        "label": "Google API 키",
+        "hint": "키 받기:"
+      },
+      "groq": {
+        "label": "Groq API 키",
+        "hint": "키 받기:"
+      },
+      "openrouter": {
+        "label": "OpenRouter API 키",
+        "hint": "키 받기:"
+      },
+      "azure": {
+        "title": "Azure OpenAI 설정",
+        "apiKey": "API 키",
+        "apiKeyPlaceholder": "API 키 입력",
+        "baseUrl": "기본 URL",
+        "llmDeployment": "LLM 배포 이름",
+        "embeddingDeployment": "임베딩 배포 이름"
+      },
+      "ollama": {
+        "title": "Ollama 설정 (로컬)",
+        "baseUrl": "기본 URL",
+        "llmModel": "LLM 모델",
+        "embeddingModel": "임베딩 모델",
+        "embeddingDim": "임베딩 차원",
+        "note": "Ollama가 로컬에서 실행 중인지 확인하세요."
+      }
+    }
   },
   "completion": {
     "title": "모든 준비가 완료되었습니다!",

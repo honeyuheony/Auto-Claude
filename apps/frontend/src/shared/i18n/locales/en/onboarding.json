@@ -82,7 +82,120 @@
   },
   "memory": {
     "title": "Memory",
-    "description": "Auto Claude Memory helps remember context across your coding sessions"
+    "description": "Auto Claude Memory helps remember context across your coding sessions",
+    "database": {
+      "title": "Memory Database",
+      "location": "Stored in ~/.auto-claude/memories/"
+    },
+    "embeddingProvider": {
+      "label": "Embedding Provider (for semantic search)",
+      "selectModel": "Select Embedding Model"
+    },
+    "info": {
+      "title": "What does Memory do?",
+      "description": "Memory stores discoveries, patterns, and insights about your codebase so future sessions start with context already loaded.",
+      "features": {
+        "patterns": "Remembers patterns across sessions",
+        "codebase": "Understands your codebase over time",
+        "offline": "Works offline - no cloud required"
+      }
+    },
+    "fallbackNote": "No embedding provider? Memory still works with keyword search. Semantic search is an upgrade.",
+    "autoCreate": {
+      "title": "Database will be created automatically",
+      "description": "Memory uses an embedded database - no Docker required. It will be created when you first use memory features."
+    }
+  },
+  "graphiti": {
+    "title": "Memory & Context",
+    "description": "Enable Graphiti for persistent memory across coding sessions",
+    "success": {
+      "title": "Graphiti configured successfully",
+      "description": "Memory features are enabled. Auto Claude will maintain context across sessions for improved code understanding."
+    },
+    "reconfigure": "Reconfigure Graphiti settings",
+    "autoCreate": {
+      "title": "Database will be created automatically",
+      "description": "LadybugDB uses an embedded database - no Docker required. The database will be created when you first use memory features."
+    },
+    "info": {
+      "title": "What is Graphiti?",
+      "description": "Graphiti is an intelligent memory layer that helps Auto Claude remember context across sessions. It uses a knowledge graph to store discoveries, patterns, and insights about your codebase.",
+      "features": {
+        "persistent": "Persistent memory across coding sessions",
+        "understanding": "Better understanding of your codebase over time",
+        "repetition": "Reduces repetitive explanations",
+        "noDocker": "No Docker required - uses embedded database"
+      }
+    },
+    "learnMore": "Learn more about Graphiti",
+    "enable": {
+      "title": "Enable Graphiti Memory",
+      "description": "Uses LadybugDB (embedded) and an LLM/embedding provider"
+    },
+    "database": {
+      "label": "Database Name",
+      "location": "Stored in ~/.auto-claude/graphs/",
+      "status": {
+        "ready": "Ready",
+        "issue": "Issue"
+      }
+    },
+    "providers": {
+      "llm": "LLM Provider",
+      "embedding": "Embedding Provider"
+    },
+    "connection": {
+      "test": "Test Connection",
+      "testing": "Testing connection...",
+      "success": "All connections validated successfully!",
+      "note": {
+        "validation": "Note: API key validation currently only fully supports OpenAI. Your key will be saved and used at runtime.",
+        "ollama": "Note: Ollama connection will be tested by checking if the server is reachable."
+      }
+    },
+    "apiKeys": {
+      "openai": {
+        "label": "OpenAI API Key",
+        "hint": "Get your key from"
+      },
+      "anthropic": {
+        "label": "Anthropic API Key",
+        "hint": "Get your key from"
+      },
+      "voyage": {
+        "label": "Voyage API Key",
+        "hint": "Get your key from"
+      },
+      "google": {
+        "label": "Google API Key",
+        "hint": "Get your key from"
+      },
+      "groq": {
+        "label": "Groq API Key",
+        "hint": "Get your key from"
+      },
+      "openrouter": {
+        "label": "OpenRouter API Key",
+        "hint": "Get your key from"
+      },
+      "azure": {
+        "title": "Azure OpenAI Settings",
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "Enter API key",
+        "baseUrl": "Base URL",
+        "llmDeployment": "LLM Deployment Name",
+        "embeddingDeployment": "Embedding Deployment Name"
+      },
+      "ollama": {
+        "title": "Ollama Settings (Local)",
+        "baseUrl": "Base URL",
+        "llmModel": "LLM Model",
+        "embeddingModel": "Embedding Model",
+        "embeddingDim": "Embedding Dimension",
+        "note": "Ensure Ollama is running locally. See"
+      }
+    }
   },
   "completion": {
     "title": "You're All Set!",

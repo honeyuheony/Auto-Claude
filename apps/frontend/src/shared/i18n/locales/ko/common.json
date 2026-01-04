@@ -29,7 +29,8 @@
     "add": "추가",
     "gotIt": "확인",
     "continue": "계속",
-    "saving": "저장 중..."
+    "saving": "저장 중...",
+    "saveAndContinue": "저장 및 계속"
   },
   "labels": {
     "loading": "로딩 중...",

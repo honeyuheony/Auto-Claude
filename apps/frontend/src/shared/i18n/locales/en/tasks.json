@@ -127,5 +127,19 @@
   },
   "metadata": {
     "severity": "severity"
+  },
+  "edit": {
+    "title": "Edit Task",
+    "dialogDescription": "Update task details including title, description, classification, images, and settings. Changes will be saved to the spec files.",
+    "saveChanges": "Save Changes",
+    "descriptionRequired": "Description is required",
+    "updateFailed": "Failed to update task. Please try again.",
+    "maxImagesAllowed": "Maximum of {{count}} images allowed",
+    "invalidImageType": "Invalid image type. Allowed: {{types}}",
+    "processPasteFailed": "Failed to process pasted image",
+    "processDropFailed": "Failed to process dropped image",
+    "pasteHint": "Tip: Paste screenshots directly with {{shortcut}} to add reference images.",
+    "referenceImages": "Reference Images (optional)",
+    "imageContextHint": "Attach screenshots, mockups, or diagrams to provide visual context for the AI."
   }
 }

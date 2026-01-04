@@ -265,5 +265,31 @@
     "changedFiles": "Changed Files",
     "fileInsights": "File Insights",
     "subtasksCompleted": "Subtasks Completed"
+  },
+  "projectIndex": {
+    "title": "Project Structure",
+    "subtitle": "AI-discovered knowledge about your codebase",
+    "refresh": "Refresh",
+    "reanalyzeTooltip": "Re-analyze project structure",
+    "failedToLoad": "Failed to load project index",
+    "noIndexTitle": "No Project Index Found",
+    "noIndexDescription": "Click the Refresh button to analyze your project structure and create an index.",
+    "analyzeProject": "Analyze Project",
+    "overview": "Overview",
+    "serviceCount": "{{count}} service",
+    "serviceCount_plural": "{{count}} services",
+    "services": "Services",
+    "infrastructure": "Infrastructure",
+    "dockerCompose": "Docker Compose",
+    "ciCd": "CI/CD",
+    "deployment": "Deployment",
+    "dockerServices": "Docker Services",
+    "conventions": "Conventions",
+    "pythonLinting": "Python Linting",
+    "jsLinting": "JS Linting",
+    "formatting": "Formatting",
+    "gitHooks": "Git Hooks",
+    "typescript": "TypeScript",
+    "enabled": "Enabled"
   }
 }

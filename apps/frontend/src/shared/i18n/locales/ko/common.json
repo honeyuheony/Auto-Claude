@@ -399,6 +399,23 @@
     "loadingImage": "이미지 로딩 중...",
     "imageNotFound": "이미지를 찾을 수 없음",
     "cannotLoadImage": "로컬 이미지를 로드할 수 없음: 프로젝트 경로 없음",
-    "failedToLoadImage": "이미지 로드 실패"
+    "failedToLoadImage": "이미지 로드 실패",
+    "backToSelection": "선택으로 돌아가기",
+    "includingCount": "{{count}}개의 {{label}} 포함",
+    "includingCountPlural": "{{count}}개의 {{label}} 포함",
+    "releaseInfo": "릴리스 정보",
+    "version": "버전",
+    "date": "날짜",
+    "previousVersion": "이전: {{version}}",
+    "outputStyle": "출력 스타일",
+    "format": "형식",
+    "audience": "대상",
+    "emojis": "이모지",
+    "advancedOptions": "고급 옵션",
+    "customInstructions": "사용자 지정 지침",
+    "customInstructionsPlaceholder": "AI에 대한 특별한 지침을 추가하세요...",
+    "customInstructionsHint": "선택 사항. AI에게 톤, 포함할 특정 세부 사항 등을 안내합니다.",
+    "generating": "생성 중...",
+    "generateChangelog": "변경 로그 생성"
   }
 }

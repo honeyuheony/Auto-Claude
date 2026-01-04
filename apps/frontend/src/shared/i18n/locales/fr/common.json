@@ -281,6 +281,23 @@
     "loadingImage": "Chargement de l'image...",
     "imageNotFound": "Image non trouvée",
     "cannotLoadImage": "Impossible de charger l'image locale : pas de chemin de projet",
-    "failedToLoadImage": "Échec du chargement de l'image"
+    "failedToLoadImage": "Échec du chargement de l'image",
+    "backToSelection": "Retour à la sélection",
+    "includingCount": "Incluant {{count}} {{label}}",
+    "includingCountPlural": "Incluant {{count}} {{label}}s",
+    "releaseInfo": "Informations de version",
+    "version": "Version",
+    "date": "Date",
+    "previousVersion": "Précédent : {{version}}",
+    "outputStyle": "Style de sortie",
+    "format": "Format",
+    "audience": "Public",
+    "emojis": "Emojis",
+    "advancedOptions": "Options avancées",
+    "customInstructions": "Instructions personnalisées",
+    "customInstructionsPlaceholder": "Ajoutez des instructions spéciales pour l'IA...",
+    "customInstructionsHint": "Optionnel. Guidez l'IA sur le ton, les détails spécifiques à inclure, etc.",
+    "generating": "Génération en cours...",
+    "generateChangelog": "Générer le changelog"
   }
 }

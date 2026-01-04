@@ -115,9 +115,10 @@ export function AuthProviderSection({
   };
 
   const handleAntigravityToggle = async (checked: boolean) => {
-    onUpdateConfig({ antigravityEnabled: checked });
-
     if (checked) {
+      // Enable Antigravity
+      onUpdateConfig({ antigravityEnabled: checked });
+
       // Check proxy status when enabling
       setProxyStatus('checking');
       const result = await window.electronAPI.checkAntigravityProxy();
@@ -130,6 +131,15 @@ export function AuthProviderSection({
           setProxyStatus('running');
         }
       }
+    } else {
+      // Disable Antigravity - reset all phases to OAuth
+      onUpdateConfig({
+        antigravityEnabled: false,
+        authProviderSpec: 'oauth',
+        authProviderPlanning: 'oauth',
+        authProviderCoding: 'oauth',
+        authProviderQa: 'oauth',
+      });
     }
   };
 

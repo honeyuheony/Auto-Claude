@@ -245,6 +245,7 @@
     "antigravityAuthToken": "인증 토큰",
     "antigravityAuthTokenPlaceholder": "프록시 인증 토큰",
     "antigravityAuthTokenDescription": "Antigravity 프록시를 위한 인증 토큰",
+    "antigravityModel": "모델",
     "phaseConfig": "단계 설정",
     "phaseConfigDescription": "각 단계에 사용할 인증 제공자 선택",
     "oauth": "OAuth (Claude)",

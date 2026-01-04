@@ -163,6 +163,19 @@ export function registerEnvHandlers(
     if (config.authProviderQa !== undefined) {
       existingVars['AUTH_PROVIDER_QA'] = config.authProviderQa;
     }
+    // Antigravity model overrides per phase
+    if (config.antigravityModelSpec !== undefined) {
+      existingVars['ANTIGRAVITY_MODEL_SPEC'] = config.antigravityModelSpec;
+    }
+    if (config.antigravityModelPlanning !== undefined) {
+      existingVars['ANTIGRAVITY_MODEL_PLANNING'] = config.antigravityModelPlanning;
+    }
+    if (config.antigravityModelCoding !== undefined) {
+      existingVars['ANTIGRAVITY_MODEL_CODING'] = config.antigravityModelCoding;
+    }
+    if (config.antigravityModelQa !== undefined) {
+      existingVars['ANTIGRAVITY_MODEL_QA'] = config.antigravityModelQa;
+    }
 
     // MCP Server Configuration
     if (config.mcpServers) {
@@ -268,6 +281,11 @@ ${existingVars['AUTH_PROVIDER_SPEC'] ? `AUTH_PROVIDER_SPEC=${existingVars['AUTH_
 ${existingVars['AUTH_PROVIDER_PLANNING'] ? `AUTH_PROVIDER_PLANNING=${existingVars['AUTH_PROVIDER_PLANNING']}` : '# AUTH_PROVIDER_PLANNING=oauth'}
 ${existingVars['AUTH_PROVIDER_CODING'] ? `AUTH_PROVIDER_CODING=${existingVars['AUTH_PROVIDER_CODING']}` : '# AUTH_PROVIDER_CODING=antigravity'}
 ${existingVars['AUTH_PROVIDER_QA'] ? `AUTH_PROVIDER_QA=${existingVars['AUTH_PROVIDER_QA']}` : '# AUTH_PROVIDER_QA=oauth'}
+# Per-phase Antigravity model (when using antigravity provider)
+${existingVars['ANTIGRAVITY_MODEL_SPEC'] ? `ANTIGRAVITY_MODEL_SPEC=${existingVars['ANTIGRAVITY_MODEL_SPEC']}` : '# ANTIGRAVITY_MODEL_SPEC=claude-opus-4-5-thinking'}
+${existingVars['ANTIGRAVITY_MODEL_PLANNING'] ? `ANTIGRAVITY_MODEL_PLANNING=${existingVars['ANTIGRAVITY_MODEL_PLANNING']}` : '# ANTIGRAVITY_MODEL_PLANNING=gemini-3-pro-high'}
+${existingVars['ANTIGRAVITY_MODEL_CODING'] ? `ANTIGRAVITY_MODEL_CODING=${existingVars['ANTIGRAVITY_MODEL_CODING']}` : '# ANTIGRAVITY_MODEL_CODING=gemini-3-flash'}
+${existingVars['ANTIGRAVITY_MODEL_QA'] ? `ANTIGRAVITY_MODEL_QA=${existingVars['ANTIGRAVITY_MODEL_QA']}` : '# ANTIGRAVITY_MODEL_QA=claude-sonnet-4-5-thinking'}
 
 # =============================================================================
 # MCP SERVER CONFIGURATION (per-project overrides)
@@ -496,6 +514,19 @@ ${existingVars['GRAPHITI_DB_PATH'] ? `GRAPHITI_DB_PATH=${existingVars['GRAPHITI_
       }
       if (vars['AUTH_PROVIDER_QA']) {
         config.authProviderQa = vars['AUTH_PROVIDER_QA'] as 'oauth' | 'antigravity';
+      }
+      // Antigravity model overrides per phase
+      if (vars['ANTIGRAVITY_MODEL_SPEC']) {
+        config.antigravityModelSpec = vars['ANTIGRAVITY_MODEL_SPEC'];
+      }
+      if (vars['ANTIGRAVITY_MODEL_PLANNING']) {
+        config.antigravityModelPlanning = vars['ANTIGRAVITY_MODEL_PLANNING'];
+      }
+      if (vars['ANTIGRAVITY_MODEL_CODING']) {
+        config.antigravityModelCoding = vars['ANTIGRAVITY_MODEL_CODING'];
+      }
+      if (vars['ANTIGRAVITY_MODEL_QA']) {
+        config.antigravityModelQa = vars['ANTIGRAVITY_MODEL_QA'];
       }
 
       // Populate graphitiProviderConfig from .env file (embeddings only - no LLM provider)

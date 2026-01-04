@@ -338,15 +338,21 @@ def get_auth_config(provider: str) -> dict[str, str]:
         }
 
 
-def get_sdk_env_vars_for_provider(provider: str) -> dict[str, str]:
+def get_sdk_env_vars_for_provider(
+    provider: str,
+    spec_dir: Path | None = None,
+    agent_type: str | None = None,
+) -> dict[str, str]:
     """
     Get SDK environment variables configured for a specific auth provider.
 
     For OAuth: Uses Claude Code OAuth token with default Anthropic API
-    For Antigravity: Routes through proxy with ANTHROPIC_BASE_URL override
+    For Antigravity: Routes through proxy with ANTHROPIC_BASE_URL override and model selection
 
     Args:
         provider: Auth provider ("oauth" or "antigravity")
+        spec_dir: Path to spec directory (for model selection)
+        agent_type: Agent type (for model selection)
 
     Returns:
         Dict of environment variables to pass to SDK subprocess
@@ -358,6 +364,13 @@ def get_sdk_env_vars_for_provider(provider: str) -> dict[str, str]:
         # Configure for Antigravity proxy
         base_env["ANTHROPIC_BASE_URL"] = get_antigravity_base_url()
         base_env["ANTHROPIC_AUTH_TOKEN"] = get_antigravity_auth_token()
+
+        # Set Antigravity model if spec_dir and agent_type are provided
+        if spec_dir and agent_type:
+            from phase_config import get_agent_antigravity_model
+            antigravity_model = get_agent_antigravity_model(spec_dir, agent_type)
+            base_env["ANTHROPIC_MODEL"] = antigravity_model
+
         # Remove OAuth token - proxy handles auth
         base_env.pop("CLAUDE_CODE_OAUTH_TOKEN", None)
     else:  # oauth
@@ -369,7 +382,11 @@ def get_sdk_env_vars_for_provider(provider: str) -> dict[str, str]:
     return base_env
 
 
-def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
+def get_sdk_env_vars_with_fallback(
+    provider: str,
+    spec_dir: Path | None = None,
+    agent_type: str | None = None,
+) -> tuple[dict[str, str], str]:
     """
     Get SDK environment variables with automatic fallback on Antigravity failure.
 
@@ -378,6 +395,8 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
 
     Args:
         provider: Requested auth provider ("oauth" or "antigravity")
+        spec_dir: Path to spec directory (for model selection)
+        agent_type: Agent type (for model selection)
 
     Returns:
         Tuple of (env_vars_dict, actual_provider_used)
@@ -385,7 +404,10 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
     if provider == "antigravity":
         # Check if Antigravity proxy is available
         if check_antigravity_health():
-            return get_sdk_env_vars_for_provider("antigravity"), "antigravity"
+            return (
+                get_sdk_env_vars_for_provider("antigravity", spec_dir, agent_type),
+                "antigravity",
+            )
 
         # Try to auto-start the proxy if enabled
         if is_antigravity_autostart_enabled():
@@ -394,7 +416,10 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
                 # Verify it's now running
                 if check_antigravity_health():
                     logger.info("Antigravity proxy started successfully")
-                    return get_sdk_env_vars_for_provider("antigravity"), "antigravity"
+                    return (
+                        get_sdk_env_vars_for_provider("antigravity", spec_dir, agent_type),
+                        "antigravity",
+                    )
                 else:
                     logger.warning("Antigravity proxy started but health check failed")
 
@@ -403,9 +428,9 @@ def get_sdk_env_vars_with_fallback(provider: str) -> tuple[dict[str, str], str]:
             "Antigravity proxy unavailable, falling back to OAuth. "
             f"Check if proxy is running at {get_antigravity_base_url()}"
         )
-        return get_sdk_env_vars_for_provider("oauth"), "oauth"
+        return get_sdk_env_vars_for_provider("oauth", spec_dir, agent_type), "oauth"
 
-    return get_sdk_env_vars_for_provider(provider), provider
+    return get_sdk_env_vars_for_provider(provider, spec_dir, agent_type), provider
 
 
 # =============================================================================

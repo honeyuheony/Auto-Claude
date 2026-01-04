@@ -555,7 +555,9 @@ def create_client(
         auth_provider = get_agent_auth_provider(spec_dir, agent_type)
 
     # Get SDK env vars with fallback (Antigravity -> OAuth if proxy unavailable)
-    sdk_env, actual_provider = get_sdk_env_vars_with_fallback(auth_provider)
+    sdk_env, actual_provider = get_sdk_env_vars_with_fallback(
+        auth_provider, spec_dir, agent_type
+    )
 
     # For OAuth, also ensure the token is set in os.environ for SDK compatibility
     if actual_provider == "oauth":

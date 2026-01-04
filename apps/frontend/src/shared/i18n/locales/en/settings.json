@@ -245,6 +245,7 @@
     "antigravityAuthToken": "Auth Token",
     "antigravityAuthTokenPlaceholder": "Your proxy auth token",
     "antigravityAuthTokenDescription": "Authentication token for the Antigravity proxy",
+    "antigravityModel": "Model",
     "phaseConfig": "Phase Configuration",
     "phaseConfigDescription": "Choose which auth provider to use for each phase",
     "oauth": "OAuth (Claude)",

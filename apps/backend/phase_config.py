@@ -95,6 +95,15 @@ DEFAULT_AGENT_AUTH_PROVIDERS: dict[str, str] = {
     "complexity_assessor": "oauth",
 }
 
+# Default Antigravity models per phase (when using antigravity provider)
+# These models are available through the Antigravity proxy
+DEFAULT_PHASE_ANTIGRAVITY_MODELS: dict[str, str] = {
+    "spec": "claude-opus-4-5-thinking",  # Highest quality for spec creation
+    "planning": "gemini-3-pro-high",  # High-quality Gemini for planning
+    "coding": "gemini-3-flash",  # Fast Gemini for coding
+    "qa": "claude-sonnet-4-5-thinking",  # Thorough review with thinking
+}
+
 
 class PhaseModelConfig(TypedDict, total=False):
     spec: str
@@ -117,6 +126,13 @@ class PhaseAuthProviderConfig(TypedDict, total=False):
     qa: str
 
 
+class PhaseAntigravityModelConfig(TypedDict, total=False):
+    spec: str
+    planning: str
+    coding: str
+    qa: str
+
+
 class TaskMetadataConfig(TypedDict, total=False):
     """Structure of model-related fields in task_metadata.json"""
 
@@ -124,9 +140,11 @@ class TaskMetadataConfig(TypedDict, total=False):
     phaseModels: PhaseModelConfig
     phaseThinking: PhaseThinkingConfig
     phaseAuthProviders: PhaseAuthProviderConfig
+    phaseAntigravityModels: PhaseAntigravityModelConfig
     model: str
     thinkingLevel: str
     authProvider: str  # Global auth provider override
+    antigravityModel: str  # Global antigravity model override
 
 
 Phase = Literal["spec", "planning", "coding", "qa"]
@@ -464,6 +482,99 @@ def get_agent_auth_provider(
 
     # For utility agents not mapped to a phase, use agent-specific default
     return DEFAULT_AGENT_AUTH_PROVIDERS.get(agent_type, "oauth")
+
+
+def get_phase_antigravity_model(
+    spec_dir: Path,
+    phase: Phase,
+    cli_antigravity_model: str | None = None,
+) -> str:
+    """
+    Get the Antigravity model for a specific execution phase.
+
+    Priority:
+    1. CLI argument (if provided)
+    2. Environment variable override (ANTIGRAVITY_MODEL_<PHASE>)
+    3. Phase-specific config from task_metadata.json (if auto profile)
+    4. Single antigravity model from task_metadata.json (if not auto profile)
+    5. Default phase configuration
+
+    Args:
+        spec_dir: Path to the spec directory
+        phase: Execution phase (spec, planning, coding, qa)
+        cli_antigravity_model: Antigravity model from CLI argument (optional)
+
+    Returns:
+        Antigravity model string (e.g., "claude-sonnet-4-5", "gemini-2.5-pro")
+    """
+    # CLI argument takes precedence
+    if cli_antigravity_model:
+        return cli_antigravity_model
+
+    # Environment variable override (e.g., ANTIGRAVITY_MODEL_CODING=claude-sonnet-4-5)
+    env_override = os.environ.get(f"ANTIGRAVITY_MODEL_{phase.upper()}")
+    if env_override:
+        return env_override
+
+    # Load task metadata
+    metadata = load_task_metadata(spec_dir)
+
+    if metadata:
+        # Check for auto profile with phase-specific config
+        if metadata.get("isAutoProfile") and metadata.get("phaseAntigravityModels"):
+            phase_models = metadata["phaseAntigravityModels"]
+            return phase_models.get(phase, DEFAULT_PHASE_ANTIGRAVITY_MODELS[phase])
+
+        # Non-auto profile: use single antigravity model
+        if metadata.get("antigravityModel"):
+            return metadata["antigravityModel"]
+
+    # Fall back to default phase configuration
+    return DEFAULT_PHASE_ANTIGRAVITY_MODELS[phase]
+
+
+def get_agent_antigravity_model(
+    spec_dir: Path,
+    agent_type: str,
+    cli_antigravity_model: str | None = None,
+) -> str:
+    """
+    Get the Antigravity model for a specific agent type.
+
+    Maps agent types to their corresponding phase, then uses phase antigravity model logic.
+
+    Args:
+        spec_dir: Path to the spec directory
+        agent_type: Agent type (e.g., 'coder', 'planner', 'qa_reviewer')
+        cli_antigravity_model: Antigravity model from CLI argument (optional)
+
+    Returns:
+        Antigravity model string (e.g., "claude-sonnet-4-5", "gemini-2.5-pro")
+    """
+    # CLI argument takes precedence
+    if cli_antigravity_model:
+        return cli_antigravity_model
+
+    # Map agent type to phase for phase-based lookup
+    agent_to_phase: dict[str, Phase] = {
+        "planner": "planning",
+        "coder": "coding",
+        "qa_reviewer": "qa",
+        "qa_fixer": "qa",
+        "spec_gatherer": "spec",
+        "spec_researcher": "spec",
+        "spec_writer": "spec",
+        "spec_critic": "spec",
+        "complexity_assessor": "spec",
+    }
+
+    # If agent type maps to a phase, use phase-based lookup
+    if agent_type in agent_to_phase:
+        phase = agent_to_phase[agent_type]
+        return get_phase_antigravity_model(spec_dir, phase, cli_antigravity_model)
+
+    # For utility agents not mapped to a phase, use default coding phase model
+    return DEFAULT_PHASE_ANTIGRAVITY_MODELS["coding"]
 
 
 def is_antigravity_enabled() -> bool:

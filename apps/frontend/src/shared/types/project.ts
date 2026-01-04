@@ -350,6 +350,11 @@ export interface ProjectEnvConfig {
   authProviderPlanning?: 'oauth' | 'antigravity';
   authProviderCoding?: 'oauth' | 'antigravity';
   authProviderQa?: 'oauth' | 'antigravity';
+  // Per-phase Antigravity model overrides
+  antigravityModelSpec?: string;
+  antigravityModelPlanning?: string;
+  antigravityModelCoding?: string;
+  antigravityModelQa?: string;
 
   // MCP Server Configuration (per-project overrides)
   mcpServers?: {

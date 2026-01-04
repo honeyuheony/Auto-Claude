@@ -36,6 +36,29 @@ const DEFAULT_PHASE_PROVIDERS: Record<Phase, AuthProviderType> = {
   qa: 'oauth',
 };
 
+// Available Antigravity models
+const ANTIGRAVITY_MODELS = [
+  { value: 'claude-opus-4-5-thinking', label: 'Claude Opus 4.5 (Thinking)' },
+  { value: 'claude-sonnet-4-5-thinking', label: 'Claude Sonnet 4.5 (Thinking)' },
+  { value: 'claude-sonnet-4-5', label: 'Claude Sonnet 4.5' },
+  { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+  { value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite' },
+  { value: 'gemini-2.5-flash-thinking', label: 'Gemini 2.5 Flash (Thinking)' },
+  { value: 'gemini-3-flash', label: 'Gemini 3.0 Flash' },
+  { value: 'gemini-3-pro-high', label: 'Gemini 3.0 Pro (High)' },
+  { value: 'gemini-3-pro-low', label: 'Gemini 3.0 Pro (Low)' },
+  { value: 'gemini-3-pro-image', label: 'Gemini 3.0 Pro (Image)' },
+] as const;
+
+// Default Antigravity models per phase
+const DEFAULT_PHASE_ANTIGRAVITY_MODELS: Record<Phase, string> = {
+  spec: 'claude-opus-4-5-thinking',
+  planning: 'gemini-3-pro-high',
+  coding: 'gemini-3-flash',
+  qa: 'claude-sonnet-4-5-thinking',
+};
+
 export function AuthProviderSection({
   isExpanded,
   onToggle,
@@ -142,6 +165,36 @@ export function AuthProviderSection({
         break;
       case 'qa':
         onUpdateConfig({ authProviderQa: provider });
+        break;
+    }
+  };
+
+  const getPhaseAntigravityModel = (phase: Phase): string => {
+    switch (phase) {
+      case 'spec':
+        return envConfig.antigravityModelSpec || DEFAULT_PHASE_ANTIGRAVITY_MODELS.spec;
+      case 'planning':
+        return envConfig.antigravityModelPlanning || DEFAULT_PHASE_ANTIGRAVITY_MODELS.planning;
+      case 'coding':
+        return envConfig.antigravityModelCoding || DEFAULT_PHASE_ANTIGRAVITY_MODELS.coding;
+      case 'qa':
+        return envConfig.antigravityModelQa || DEFAULT_PHASE_ANTIGRAVITY_MODELS.qa;
+    }
+  };
+
+  const updatePhaseAntigravityModel = (phase: Phase, model: string) => {
+    switch (phase) {
+      case 'spec':
+        onUpdateConfig({ antigravityModelSpec: model });
+        break;
+      case 'planning':
+        onUpdateConfig({ antigravityModelPlanning: model });
+        break;
+      case 'coding':
+        onUpdateConfig({ antigravityModelCoding: model });
+        break;
+      case 'qa':
+        onUpdateConfig({ antigravityModelQa: model });
         break;
     }
   };
@@ -278,39 +331,72 @@ export function AuthProviderSection({
             </div>
 
             <div className="space-y-3">
-              {PHASES.map((phase) => (
-                <div
-                  key={phase}
-                  className="flex items-center justify-between rounded-lg border border-border p-3"
-                >
-                  <div className="space-y-0.5">
-                    <Label className="font-normal text-foreground">
-                      {t(`authProvider.phases.${phase}`)}
-                    </Label>
-                    <p className="text-xs text-muted-foreground">
-                      {t(`authProvider.defaults.${phase}`)}
-                    </p>
-                  </div>
-                  <Select
-                    value={getPhaseProvider(phase)}
-                    onValueChange={(value: AuthProviderType) =>
-                      updatePhaseProvider(phase, value)
-                    }
+              {PHASES.map((phase) => {
+                const phaseProvider = getPhaseProvider(phase);
+                const isAntigravity = phaseProvider === 'antigravity';
+
+                return (
+                  <div
+                    key={phase}
+                    className="space-y-3 rounded-lg border border-border p-3"
                   >
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="oauth">
-                        {t('authProvider.oauth')}
-                      </SelectItem>
-                      <SelectItem value="antigravity">
-                        {t('authProvider.antigravity')}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              ))}
+                    {/* Auth Provider Selection */}
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="font-normal text-foreground">
+                          {t(`authProvider.phases.${phase}`)}
+                        </Label>
+                      </div>
+                      <Select
+                        value={phaseProvider}
+                        onValueChange={(value: AuthProviderType) =>
+                          updatePhaseProvider(phase, value)
+                        }
+                      >
+                        <SelectTrigger className="w-[160px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="oauth">
+                            {t('authProvider.oauth')}
+                          </SelectItem>
+                          <SelectItem value="antigravity">
+                            {t('authProvider.antigravity')}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Antigravity Model Selection (only when using antigravity) */}
+                    {isAntigravity && (
+                      <div className="flex items-center justify-between pl-4 border-l-2 border-warning/30">
+                        <div className="space-y-0.5">
+                          <Label className="text-xs font-normal text-muted-foreground">
+                            {t('authProvider.antigravityModel')}
+                          </Label>
+                        </div>
+                        <Select
+                          value={getPhaseAntigravityModel(phase)}
+                          onValueChange={(value: string) =>
+                            updatePhaseAntigravityModel(phase, value)
+                          }
+                        >
+                          <SelectTrigger className="w-[220px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ANTIGRAVITY_MODELS.map((model) => (
+                              <SelectItem key={model.value} value={model.value}>
+                                {model.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>

@@ -298,6 +298,35 @@
     "customInstructionsPlaceholder": "Ajoutez des instructions spéciales pour l'IA...",
     "customInstructionsHint": "Optionnel. Guidez l'IA sur le ton, les détails spécifiques à inclure, etc.",
     "generating": "Génération en cours...",
-    "generateChangelog": "Générer le changelog"
+    "generateChangelog": "Générer le changelog",
+    "filters": {
+      "source": "Source du changelog",
+      "gitHistoryOptions": "Options d'historique Git",
+      "historyType": "Type d'historique",
+      "sinceVersion": "Depuis la version",
+      "recentCommits": "Commits récents",
+      "sinceDate": "Depuis la date",
+      "tagRange": "Plage de tags",
+      "numberOfCommits": "Nombre de commits",
+      "fromTag": "Du tag",
+      "selectTag": "Sélectionner un tag...",
+      "toTagOptional": "Au tag (optionnel)",
+      "headLatest": "HEAD (dernier)",
+      "lastVersion": "Dernière version",
+      "selectVersion": "Sélectionner une version...",
+      "sinceVersionHint": "Tous les commits depuis cette version seront inclus",
+      "includeMergeCommits": "Inclure les commits de fusion",
+      "loadCommits": "Charger les commits",
+      "branchComparison": "Comparaison de branches",
+      "baseBranch": "Branche de base",
+      "selectBaseBranch": "Sélectionner la branche de base...",
+      "default": "par défaut",
+      "baseBranchHint": "La branche dans laquelle vous fusionnez",
+      "compareBranch": "Branche à comparer",
+      "selectCompareBranch": "Sélectionner la branche à comparer...",
+      "current": "actuelle",
+      "compareBranchHint": "La branche avec vos modifications",
+      "branchesMustBeDifferent": "Les branches doivent être différentes"
+    }
   }
 }

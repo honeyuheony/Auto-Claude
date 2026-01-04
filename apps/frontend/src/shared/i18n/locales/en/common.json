@@ -273,6 +273,29 @@
     "authenticationMethod": "Authentication method: {{name}}",
     "usingProfile": "Using profile: {{name}}"
   },
+  "roadmapGeneration": {
+    "phases": {
+      "analyzing": "Analyzing",
+      "analyzingDescription": "Analyzing project structure and codebase...",
+      "discovering": "Discovering",
+      "discoveringDescription": "Discovering target audience and user needs...",
+      "generating": "Generating",
+      "generatingDescription": "Generating feature roadmap...",
+      "complete": "Complete",
+      "completeDescription": "Roadmap generation complete!",
+      "error": "Error",
+      "errorDescription": "Generation failed"
+    },
+    "steps": {
+      "analyze": "Analyze",
+      "discover": "Discover",
+      "generate": "Generate"
+    },
+    "stopping": "Stopping...",
+    "stop": "Stop",
+    "stopGeneration": "Stop generation",
+    "progress": "Progress"
+  },
   "projectIndex": {
     "title": "Project Structure",
     "subtitle": "AI-discovered knowledge about your codebase",

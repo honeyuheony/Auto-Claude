@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Users, Sparkles, CheckCircle2, AlertCircle, Square } from 'lucide-react';
 import { Button } from './ui/button';
@@ -44,48 +45,36 @@ interface RoadmapGenerationProgressProps {
 // Type for generation phases (excluding idle)
 type GenerationPhase = Exclude<RoadmapGenerationStatus['phase'], 'idle'>;
 
-// Phase display configuration
+// Phase display configuration (icon and styling only - labels are i18n)
 const PHASE_CONFIG: Record<
   GenerationPhase,
   {
-    label: string;
-    description: string;
     icon: typeof Search;
     color: string;
     bgColor: string;
   }
 > = {
   analyzing: {
-    label: 'Analyzing',
-    description: 'Analyzing project structure and codebase...',
     icon: Search,
     color: 'bg-amber-500',
     bgColor: 'bg-amber-500/20',
   },
   discovering: {
-    label: 'Discovering',
-    description: 'Discovering target audience and user needs...',
     icon: Users,
     color: 'bg-info',
     bgColor: 'bg-info/20',
   },
   generating: {
-    label: 'Generating',
-    description: 'Generating feature roadmap...',
     icon: Sparkles,
     color: 'bg-primary',
     bgColor: 'bg-primary/20',
   },
   complete: {
-    label: 'Complete',
-    description: 'Roadmap generation complete!',
     icon: CheckCircle2,
     color: 'bg-success',
     bgColor: 'bg-success/20',
   },
   error: {
-    label: 'Error',
-    description: 'Generation failed',
     icon: AlertCircle,
     color: 'bg-destructive',
     bgColor: 'bg-destructive/20',
@@ -93,10 +82,11 @@ const PHASE_CONFIG: Record<
 };
 
 // Phases shown in the step indicator (excluding complete and error)
-const STEP_PHASES: { key: GenerationPhase; label: string }[] = [
-  { key: 'analyzing', label: 'Analyze' },
-  { key: 'discovering', label: 'Discover' },
-  { key: 'generating', label: 'Generate' },
+// Labels are resolved via i18n: common:roadmapGeneration.steps.{stepKey}
+const STEP_PHASES: { key: GenerationPhase; stepKey: string }[] = [
+  { key: 'analyzing', stepKey: 'analyze' },
+  { key: 'discovering', stepKey: 'discover' },
+  { key: 'generating', stepKey: 'generate' },
 ];
 
 /**
@@ -109,6 +99,7 @@ function PhaseStepsIndicator({
   currentPhase: RoadmapGenerationStatus['phase'];
   reducedMotion: boolean;
 }) {
+  const { t } = useTranslation(['common']);
   const getPhaseState = (
     phaseKey: GenerationPhase
   ): 'pending' | 'active' | 'complete' | 'error' => {
@@ -166,7 +157,7 @@ function PhaseStepsIndicator({
                   />
                 </svg>
               )}
-              {phase.label}
+              {t(`common:roadmapGeneration.steps.${phase.stepKey}`)}
             </motion.div>
             {index < STEP_PHASES.length - 1 && (
               <div
@@ -195,6 +186,7 @@ export function RoadmapGenerationProgress({
   className,
   onStop
 }: RoadmapGenerationProgressProps) {
+  const { t } = useTranslation(['common']);
   const { phase, progress, message, error } = generationStatus;
   const reducedMotion = useReducedMotion();
   const [isStopping, setIsStopping] = useState(false);
@@ -281,10 +273,10 @@ export function RoadmapGenerationProgress({
                 disabled={isStopping}
               >
                 <Square className="h-4 w-4 mr-1" />
-                {isStopping ? 'Stopping...' : 'Stop'}
+                {isStopping ? t('common:roadmapGeneration.stopping') : t('common:roadmapGeneration.stop')}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Stop generation</TooltipContent>
+            <TooltipContent>{t('common:roadmapGeneration.stopGeneration')}</TooltipContent>
           </Tooltip>
         </div>
       )}
@@ -320,9 +312,9 @@ export function RoadmapGenerationProgress({
             transition={{ duration: 0.2 }}
             className="space-y-1"
           >
-            <h3 className="text-lg font-semibold">{config.label}</h3>
-            <p className="text-sm text-muted-foreground">{config.description}</p>
-            {message && message !== config.description && (
+            <h3 className="text-lg font-semibold">{t(`common:roadmapGeneration.phases.${phase}`)}</h3>
+            <p className="text-sm text-muted-foreground">{t(`common:roadmapGeneration.phases.${phase}Description`)}</p>
+            {message && message !== t(`common:roadmapGeneration.phases.${phase}Description`) && (
               <p className="text-xs text-muted-foreground mt-1">{message}</p>
             )}
           </motion.div>
@@ -333,7 +325,7 @@ export function RoadmapGenerationProgress({
       {isActivePhase && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Progress</span>
+            <span className="text-xs text-muted-foreground">{t('common:roadmapGeneration.progress')}</span>
             <span className="text-xs font-medium">{progress}%</span>
           </div>
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-border">

@@ -32,7 +32,53 @@
     "title": "Authentification Claude",
     "description": "Connectez votre compte Claude pour activer les fonctionnalités IA",
     "keychainTitle": "Stockage sécurisé",
-    "keychainDescription": "Vos jetons sont chiffrés à l'aide du trousseau de clés de votre système. Une demande de mot de passe macOS peut apparaître — cliquez sur « Toujours autoriser » pour ne plus la revoir."
+    "keychainDescription": "Vos jetons sont chiffrés à l'aide du trousseau de clés de votre système. Une demande de mot de passe macOS peut apparaître — cliquez sur « Toujours autoriser » pour ne plus la revoir.",
+    "configureTitle": "Configurer l'authentification Claude",
+    "addAccounts": "Ajoutez vos comptes Claude pour activer les fonctionnalités IA",
+    "multipleAccounts": "Ajoutez plusieurs abonnements Claude pour basculer automatiquement entre eux lorsque vous atteignez les limites d'utilisation.",
+    "noAccounts": "Aucun compte configuré",
+    "successMessage": "Vous avez au moins un compte Claude authentifié. Vous pouvez passer à l'étape suivante.",
+    "accountPlaceholder": "Nom du compte (ex: Travail, Personnel)",
+    "profile": {
+      "default": "Par défaut",
+      "active": "Actif",
+      "authenticated": "Authentifié",
+      "needsAuth": "Auth requise",
+      "authenticate": "Authentifier",
+      "setActive": "Activer",
+      "rename": "Renommer le profil",
+      "delete": "Supprimer le profil",
+      "hideToken": "Masquer l'entrée du jeton",
+      "enterToken": "Saisir le jeton manuellement"
+    },
+    "token": {
+      "manualEntry": "Saisie manuelle du jeton",
+      "instructions": "Exécutez <code>claude setup-token</code> pour obtenir votre jeton",
+      "emailPlaceholder": "Email (optionnel, pour affichage)",
+      "save": "Enregistrer le jeton"
+    },
+    "add": "Ajouter",
+    "alerts": {
+      "authSuccess": "Profil authentifié avec succès !\n\n{{email}}\n\nVous pouvez maintenant utiliser ce profil.",
+      "authSuccessNoEmail": "Profil authentifié avec succès !\n\nAuthentification terminée.\n\nVous pouvez maintenant utiliser ce profil.",
+      "authenticating": "Authentification de « {{name}} »...\n\nUne fenêtre de navigateur s'ouvrira pour vous connecter avec votre compte Claude.\n\nL'authentification sera enregistrée automatiquement une fois terminée.",
+      "authenticatingProfile": "Authentification du profil...\n\nUne fenêtre de navigateur s'ouvrira pour vous connecter avec votre compte Claude.\n\nL'authentification sera enregistrée automatiquement une fois terminée."
+    },
+    "errors": {
+      "loadProfiles": "Échec du chargement des profils",
+      "profileNameRequired": "Le nom du profil doit contenir au moins une lettre ou un chiffre",
+      "addProfile": "Échec de l'ajout du profil",
+      "addProfileRetry": "Échec de l'ajout du profil. Veuillez réessayer.",
+      "deleteProfile": "Échec de la suppression du profil",
+      "renameProfile": "Échec du renommage du profil",
+      "setActiveProfile": "Échec de la définition du profil actif",
+      "authenticateProfile": "Échec de l'authentification du profil",
+      "authFailed": "Échec du démarrage de l'authentification : {{error}}",
+      "authFailedRetry": "Échec du démarrage de l'authentification. Veuillez réessayer.",
+      "saveToken": "Échec de l'enregistrement du jeton",
+      "saveTokenRetry": "Échec de l'enregistrement du jeton. Veuillez réessayer.",
+      "saveTokenFailed": "Échec de l'enregistrement du jeton : {{error}}"
+    }
   },
   "memory": {
     "title": "Mémoire",

@@ -32,7 +32,53 @@
     "title": "Claude 인증",
     "description": "AI 기능을 활성화하려면 Claude 계정을 연결하세요",
     "keychainTitle": "안전한 저장소",
-    "keychainDescription": "토큰은 시스템 키체인을 사용하여 암호화됩니다. macOS에서 비밀번호 프롬프트가 표시될 수 있습니다 — \"항상 허용\"을 클릭하면 다시 표시되지 않습니다."
+    "keychainDescription": "토큰은 시스템 키체인을 사용하여 암호화됩니다. macOS에서 비밀번호 프롬프트가 표시될 수 있습니다 — \"항상 허용\"을 클릭하면 다시 표시되지 않습니다.",
+    "configureTitle": "Claude 인증 설정",
+    "addAccounts": "AI 기능을 활성화하려면 Claude 계정을 추가하세요",
+    "multipleAccounts": "여러 Claude 구독을 추가하면 요율 제한에 도달했을 때 자동으로 전환됩니다.",
+    "noAccounts": "아직 구성된 계정이 없습니다",
+    "successMessage": "하나 이상의 인증된 Claude 계정이 있습니다. 다음 단계로 진행할 수 있습니다.",
+    "accountPlaceholder": "계정 이름 (예: 회사, 개인)",
+    "profile": {
+      "default": "기본값",
+      "active": "활성",
+      "authenticated": "인증됨",
+      "needsAuth": "인증 필요",
+      "authenticate": "인증",
+      "setActive": "활성화",
+      "rename": "프로필 이름 변경",
+      "delete": "프로필 삭제",
+      "hideToken": "토큰 입력 숨기기",
+      "enterToken": "토큰 직접 입력"
+    },
+    "token": {
+      "manualEntry": "토큰 직접 입력",
+      "instructions": "<code>claude setup-token</code>을 실행하여 토큰을 가져오세요",
+      "emailPlaceholder": "이메일 (선택 사항, 표시용)",
+      "save": "토큰 저장"
+    },
+    "add": "추가",
+    "alerts": {
+      "authSuccess": "프로필 인증 완료!\n\n{{email}}\n\n이제 이 프로필을 사용할 수 있습니다.",
+      "authSuccessNoEmail": "프로필 인증 완료!\n\n인증이 완료되었습니다.\n\n이제 이 프로필을 사용할 수 있습니다.",
+      "authenticating": "\"{{name}}\" 인증 중...\n\nClaude 계정으로 로그인할 수 있는 브라우저 창이 열립니다.\n\n완료되면 인증이 자동으로 저장됩니다.",
+      "authenticatingProfile": "프로필 인증 중...\n\nClaude 계정으로 로그인할 수 있는 브라우저 창이 열립니다.\n\n완료되면 인증이 자동으로 저장됩니다."
+    },
+    "errors": {
+      "loadProfiles": "프로필을 불러오지 못했습니다",
+      "profileNameRequired": "프로필 이름에는 최소 하나의 문자 또는 숫자가 포함되어야 합니다",
+      "addProfile": "프로필을 추가하지 못했습니다",
+      "addProfileRetry": "프로필을 추가하지 못했습니다. 다시 시도해 주세요.",
+      "deleteProfile": "프로필을 삭제하지 못했습니다",
+      "renameProfile": "프로필 이름을 변경하지 못했습니다",
+      "setActiveProfile": "활성 프로필을 설정하지 못했습니다",
+      "authenticateProfile": "프로필을 인증하지 못했습니다",
+      "authFailed": "인증을 시작하지 못했습니다: {{error}}",
+      "authFailedRetry": "인증을 시작하지 못했습니다. 다시 시도해 주세요.",
+      "saveToken": "토큰을 저장하지 못했습니다",
+      "saveTokenRetry": "토큰을 저장하지 못했습니다. 다시 시도해 주세요.",
+      "saveTokenFailed": "토큰을 저장하지 못했습니다: {{error}}"
+    }
   },
   "memory": {
     "title": "메모리",

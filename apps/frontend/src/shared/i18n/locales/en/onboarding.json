@@ -32,7 +32,53 @@
     "title": "Claude Authentication",
     "description": "Connect your Claude account to enable AI features",
     "keychainTitle": "Secure Storage",
-    "keychainDescription": "Your tokens are encrypted using your system's keychain. You may see a password prompt from macOS — click \"Always Allow\" to avoid seeing it again."
+    "keychainDescription": "Your tokens are encrypted using your system's keychain. You may see a password prompt from macOS — click \"Always Allow\" to avoid seeing it again.",
+    "configureTitle": "Configure Claude Authentication",
+    "addAccounts": "Add your Claude accounts to enable AI features",
+    "multipleAccounts": "Add multiple Claude subscriptions to automatically switch between them when you hit rate limits.",
+    "noAccounts": "No accounts configured yet",
+    "successMessage": "You have at least one authenticated Claude account. You can continue to the next step.",
+    "accountPlaceholder": "Account name (e.g., Work, Personal)",
+    "profile": {
+      "default": "Default",
+      "active": "Active",
+      "authenticated": "Authenticated",
+      "needsAuth": "Needs Auth",
+      "authenticate": "Authenticate",
+      "setActive": "Set Active",
+      "rename": "Rename profile",
+      "delete": "Delete profile",
+      "hideToken": "Hide token entry",
+      "enterToken": "Enter token manually"
+    },
+    "token": {
+      "manualEntry": "Manual Token Entry",
+      "instructions": "Run <code>claude setup-token</code> to get your token",
+      "emailPlaceholder": "Email (optional, for display)",
+      "save": "Save Token"
+    },
+    "add": "Add",
+    "alerts": {
+      "authSuccess": "Profile authenticated successfully!\n\n{{email}}\n\nYou can now use this profile.",
+      "authSuccessNoEmail": "Profile authenticated successfully!\n\nAuthentication complete.\n\nYou can now use this profile.",
+      "authenticating": "Authenticating \"{{name}}\"...\n\nA browser window will open for you to log in with your Claude account.\n\nThe authentication will be saved automatically once complete.",
+      "authenticatingProfile": "Authenticating profile...\n\nA browser window will open for you to log in with your Claude account.\n\nThe authentication will be saved automatically once complete."
+    },
+    "errors": {
+      "loadProfiles": "Failed to load profiles",
+      "profileNameRequired": "Profile name must contain at least one letter or number",
+      "addProfile": "Failed to add profile",
+      "addProfileRetry": "Failed to add profile. Please try again.",
+      "deleteProfile": "Failed to delete profile",
+      "renameProfile": "Failed to rename profile",
+      "setActiveProfile": "Failed to set active profile",
+      "authenticateProfile": "Failed to authenticate profile",
+      "authFailed": "Failed to start authentication: {{error}}",
+      "authFailedRetry": "Failed to start authentication. Please try again.",
+      "saveToken": "Failed to save token",
+      "saveTokenRetry": "Failed to save token. Please try again.",
+      "saveTokenFailed": "Failed to save token: {{error}}"
+    }
   },
   "memory": {
     "title": "Memory",

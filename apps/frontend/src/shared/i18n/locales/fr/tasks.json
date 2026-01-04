@@ -98,5 +98,27 @@
   },
   "metadata": {
     "severity": "sévérité"
+  },
+  "githubIssues": {
+    "createTaskFromIssue": "Créer une tâche depuis l'issue",
+    "createTaskDescription": "Créez une tâche à partir de cette issue GitHub. La tâche sera ajoutée à votre tableau Kanban dans la colonne Backlog.",
+    "failedToLoadComments": "Échec du chargement des commentaires",
+    "selectCommentsToInclude": "Sélectionner les commentaires à inclure ({{selected}}/{{total}})",
+    "deselectAll": "Tout désélectionner",
+    "selectAll": "Tout sélectionner",
+    "taskWillInclude": "La tâche inclura :",
+    "issueTitleAndDescription": "Titre et description de l'issue",
+    "linkBackToGithubIssue": "Lien vers l'issue GitHub",
+    "labelsAndMetadata": "Labels et métadonnées de l'issue",
+    "noComments": "Pas de commentaires (cette issue n'a pas de commentaires)",
+    "taskCreated": "Tâche créée ! Consultez-la dans votre tableau Kanban.",
+    "creating": "Création...",
+    "createTask": "Créer la tâche",
+    "done": "Terminé",
+    "specCreatedFromIssue": "Spec créée depuis l'issue",
+    "autoFixFailed": "Échec de la correction automatique",
+    "retryAutoFix": "Réessayer la correction automatique",
+    "processing": "Traitement...",
+    "autoFix": "Correction automatique"
   }
 }

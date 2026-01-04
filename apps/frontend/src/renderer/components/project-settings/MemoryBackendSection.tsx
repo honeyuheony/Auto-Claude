@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Database, Globe, RefreshCw, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { CollapsibleSection } from './CollapsibleSection';
 import { InfrastructureStatus } from './InfrastructureStatus';
 import { PasswordInput } from './PasswordInput';
@@ -43,6 +44,8 @@ export function MemoryBackendSection({
   infrastructureStatus,
   isCheckingInfrastructure,
 }: MemoryBackendSectionProps) {
+  const { t } = useTranslation(['settings']);
+
   // Ollama model detection state
   const [ollamaModels, setOllamaModels] = useState<OllamaEmbeddingModel[]>([]);
   const [ollamaStatus, setOllamaStatus] = useState<'idle' | 'checking' | 'connected' | 'disconnected'>('idle');
@@ -96,13 +99,13 @@ export function MemoryBackendSection({
         ? 'bg-success/10 text-success'
         : 'bg-muted text-muted-foreground'
     }`}>
-      {envConfig.graphitiEnabled ? 'Enabled' : 'Disabled'}
+      {envConfig.graphitiEnabled ? t('settings:projectSections.memory.enabled') : t('settings:projectSections.memory.disabled')}
     </span>
   );
 
   return (
     <CollapsibleSection
-      title="Memory"
+      title={t('settings:projectSections.memory.title')}
       icon={<Database className="h-4 w-4" />}
       isExpanded={isExpanded}
       onToggle={onToggle}
@@ -110,9 +113,9 @@ export function MemoryBackendSection({
     >
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <Label className="font-normal text-foreground">Enable Memory</Label>
+          <Label className="font-normal text-foreground">{t('settings:projectSections.memory.enableMemory')}</Label>
           <p className="text-xs text-muted-foreground">
-            Persistent cross-session memory using embedded graph database
+            {t('settings:projectSections.memory.enableMemoryDescription')}
           </p>
         </div>
         <Switch
@@ -128,8 +131,7 @@ export function MemoryBackendSection({
       {!envConfig.graphitiEnabled && (
         <div className="rounded-lg border border-border bg-muted/30 p-3">
           <p className="text-xs text-muted-foreground">
-            Using file-based memory. Session insights are stored locally in JSON files.
-            Enable Memory for persistent cross-session context with semantic search.
+            {t('settings:projectSections.memory.disabledNote')}
           </p>
         </div>
       )}
@@ -145,9 +147,9 @@ export function MemoryBackendSection({
           {/* Graphiti MCP Server Toggle */}
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="font-normal text-foreground">Enable Agent Memory Access</Label>
+              <Label className="font-normal text-foreground">{t('settings:projectSections.memory.enableAgentAccess')}</Label>
               <p className="text-xs text-muted-foreground">
-                Allow agents to search and add to the knowledge graph via MCP
+                {t('settings:projectSections.memory.enableAgentAccessDescription')}
               </p>
             </div>
             <Switch
@@ -160,9 +162,9 @@ export function MemoryBackendSection({
 
           {settings.graphitiMcpEnabled && (
             <div className="space-y-2 ml-6">
-              <Label className="text-sm font-medium text-foreground">Graphiti MCP Server URL</Label>
+              <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.graphitiMcpUrl')}</Label>
               <p className="text-xs text-muted-foreground">
-                URL of the Graphiti MCP server
+                {t('settings:projectSections.memory.graphitiMcpUrlDescription')}
               </p>
               <Input
                 placeholder="http://localhost:8000/mcp/"
@@ -176,9 +178,9 @@ export function MemoryBackendSection({
 
           {/* Embedding Provider Selection */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-foreground">Embedding Provider</Label>
+            <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.embeddingProvider')}</Label>
             <p className="text-xs text-muted-foreground">
-              Provider for semantic search (optional - keyword search works without)
+              {t('settings:projectSections.memory.embeddingProviderDescription')}
             </p>
             <Select
               value={embeddingProvider}
@@ -190,14 +192,14 @@ export function MemoryBackendSection({
               })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select embedding provider" />
+                <SelectValue placeholder={t('settings:projectSections.memory.selectEmbeddingProvider')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ollama">Ollama (Local - Free)</SelectItem>
-                <SelectItem value="openai">OpenAI</SelectItem>
-                <SelectItem value="voyage">Voyage AI</SelectItem>
-                <SelectItem value="google">Google AI</SelectItem>
-                <SelectItem value="azure_openai">Azure OpenAI</SelectItem>
+                <SelectItem value="ollama">{t('settings:projectSections.memory.ollamaLocalFree')}</SelectItem>
+                <SelectItem value="openai">{t('settings:projectSections.memory.openai')}</SelectItem>
+                <SelectItem value="voyage">{t('settings:projectSections.memory.voyageAi')}</SelectItem>
+                <SelectItem value="google">{t('settings:projectSections.memory.googleAi')}</SelectItem>
+                <SelectItem value="azure_openai">{t('settings:projectSections.memory.azureOpenai')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -210,28 +212,28 @@ export function MemoryBackendSection({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium text-foreground">
-                  OpenAI API Key {envConfig.openaiKeyIsGlobal ? '(Override)' : ''}
+                  {envConfig.openaiKeyIsGlobal ? t('settings:projectSections.memory.openaiApiKeyOverride') : t('settings:projectSections.memory.openaiApiKey')}
                 </Label>
                 {envConfig.openaiKeyIsGlobal && (
                   <span className="flex items-center gap-1 text-xs text-info">
                     <Globe className="h-3 w-3" />
-                    Using global key
+                    {t('settings:projectSections.memory.usingGlobalKey')}
                   </span>
                 )}
               </div>
               {envConfig.openaiKeyIsGlobal ? (
                 <p className="text-xs text-muted-foreground">
-                  Using key from App Settings. Enter a project-specific key below to override.
+                  {t('settings:projectSections.memory.usingKeyFromAppSettings')}
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  Required for OpenAI embeddings
+                  {t('settings:projectSections.memory.requiredForOpenaiEmbeddings')}
                 </p>
               )}
               <PasswordInput
                 value={envConfig.openaiKeyIsGlobal ? '' : (envConfig.openaiApiKey || '')}
                 onChange={(value) => onUpdateConfig({ openaiApiKey: value || undefined })}
-                placeholder={envConfig.openaiKeyIsGlobal ? 'Enter to override global key...' : 'sk-xxxxxxxx'}
+                placeholder={envConfig.openaiKeyIsGlobal ? t('settings:projectSections.claude.enterToOverride') : 'sk-xxxxxxxx'}
               />
             </div>
           )}
@@ -239,9 +241,9 @@ export function MemoryBackendSection({
           {/* Voyage AI */}
           {embeddingProvider === 'voyage' && (
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-foreground">Voyage AI API Key</Label>
+              <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.voyageAiApiKey')}</Label>
               <p className="text-xs text-muted-foreground">
-                Required for Voyage AI embeddings
+                {t('settings:projectSections.memory.requiredForVoyageAiEmbeddings')}
               </p>
               <PasswordInput
                 value={envConfig.graphitiProviderConfig?.voyageApiKey || ''}
@@ -255,7 +257,7 @@ export function MemoryBackendSection({
                 placeholder="pa-xxxxxxxx"
               />
               <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Embedding Model</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.embeddingModel')}</Label>
                 <Input
                   placeholder="voyage-3"
                   value={envConfig.graphitiProviderConfig?.voyageEmbeddingModel || ''}
@@ -274,9 +276,9 @@ export function MemoryBackendSection({
           {/* Google AI */}
           {embeddingProvider === 'google' && (
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-foreground">Google AI API Key</Label>
+              <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.googleAiApiKey')}</Label>
               <p className="text-xs text-muted-foreground">
-                Required for Google AI embeddings
+                {t('settings:projectSections.memory.requiredForGoogleAiEmbeddings')}
               </p>
               <PasswordInput
                 value={envConfig.graphitiProviderConfig?.googleApiKey || ''}
@@ -295,9 +297,9 @@ export function MemoryBackendSection({
           {/* Azure OpenAI */}
           {embeddingProvider === 'azure_openai' && (
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-foreground">Azure OpenAI Configuration</Label>
+              <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.azureOpenaiConfiguration')}</Label>
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">API Key</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.apiKey')}</Label>
                 <PasswordInput
                   value={envConfig.graphitiProviderConfig?.azureOpenaiApiKey || ''}
                   onChange={(value) => onUpdateConfig({
@@ -311,7 +313,7 @@ export function MemoryBackendSection({
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Base URL</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.baseUrl')}</Label>
                 <Input
                   placeholder="https://your-resource.openai.azure.com"
                   value={envConfig.graphitiProviderConfig?.azureOpenaiBaseUrl || ''}
@@ -325,7 +327,7 @@ export function MemoryBackendSection({
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Embedding Deployment Name</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.embeddingDeploymentName')}</Label>
                 <Input
                   placeholder="text-embedding-ada-002"
                   value={envConfig.graphitiProviderConfig?.azureOpenaiEmbeddingDeployment || ''}
@@ -345,24 +347,24 @@ export function MemoryBackendSection({
           {embeddingProvider === 'ollama' && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium text-foreground">Ollama Configuration</Label>
+                <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.ollamaConfiguration')}</Label>
                 <div className="flex items-center gap-2">
                   {ollamaStatus === 'checking' && (
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Loader2 className="h-3 w-3 animate-spin" />
-                      Checking...
+                      {t('settings:projectSections.memory.checking')}
                     </span>
                   )}
                   {ollamaStatus === 'connected' && (
                     <span className="flex items-center gap-1 text-xs text-success">
                       <CheckCircle2 className="h-3 w-3" />
-                      Connected
+                      {t('settings:projectSections.memory.connected')}
                     </span>
                   )}
                   {ollamaStatus === 'disconnected' && (
                     <span className="flex items-center gap-1 text-xs text-destructive">
                       <AlertCircle className="h-3 w-3" />
-                      Not running
+                      {t('settings:projectSections.memory.notRunning')}
                     </span>
                   )}
                   <Button
@@ -378,7 +380,7 @@ export function MemoryBackendSection({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Base URL</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.baseUrl')}</Label>
                 <Input
                   placeholder="http://localhost:11434"
                   value={envConfig.graphitiProviderConfig?.ollamaBaseUrl || ''}
@@ -399,7 +401,7 @@ export function MemoryBackendSection({
               )}
 
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Embedding Model</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.embeddingModel')}</Label>
                 {ollamaModels.length > 0 ? (
                   <Select
                     value={envConfig.graphitiProviderConfig?.ollamaEmbeddingModel || ''}
@@ -416,7 +418,7 @@ export function MemoryBackendSection({
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select embedding model" />
+                      <SelectValue placeholder={t('settings:projectSections.memory.selectEmbeddingModel')} />
                     </SelectTrigger>
                     <SelectContent>
                       {ollamaModels.map((model) => (
@@ -447,12 +449,12 @@ export function MemoryBackendSection({
                   />
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Recommended: qwen3-embedding:4b (balanced), :8b (quality), :0.6b (fast)
+                  {t('settings:projectSections.memory.recommendedModels')}
                 </p>
               </div>
 
               <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Embedding Dimension</Label>
+                <Label className="text-xs text-muted-foreground">{t('settings:projectSections.memory.embeddingDimension')}</Label>
                 <Input
                   type="number"
                   placeholder="768"
@@ -466,7 +468,7 @@ export function MemoryBackendSection({
                   })}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Required for Ollama embeddings (e.g., 768 for nomic-embed-text)
+                  {t('settings:projectSections.memory.embeddingDimensionDescription')}
                 </p>
               </div>
             </div>
@@ -476,9 +478,9 @@ export function MemoryBackendSection({
           <Separator />
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-foreground">Database Name</Label>
+            <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.databaseName')}</Label>
             <p className="text-xs text-muted-foreground">
-              Name for the memory database (stored in ~/.auto-claude/memories/)
+              {t('settings:projectSections.memory.databaseNameDescription')}
             </p>
             <Input
               placeholder="auto_claude_memory"
@@ -488,9 +490,9 @@ export function MemoryBackendSection({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-foreground">Database Path (Optional)</Label>
+            <Label className="text-sm font-medium text-foreground">{t('settings:projectSections.memory.databasePath')}</Label>
             <p className="text-xs text-muted-foreground">
-              Custom storage location. Default: ~/.auto-claude/memories/
+              {t('settings:projectSections.memory.databasePathDescription')}
             </p>
             <Input
               placeholder="~/.auto-claude/memories"

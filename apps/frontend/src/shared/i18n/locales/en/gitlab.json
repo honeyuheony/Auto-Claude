@@ -114,8 +114,12 @@
   },
   "mergeRequests": {
     "title": "GitLab Merge Requests",
+    "listTitle": "Merge Requests",
     "newMR": "New Merge Request",
     "selectMR": "Select a merge request to view details",
+    "searchPlaceholder": "Search merge requests...",
+    "noMatch": "No matching merge requests",
+    "noFound": "No merge requests found",
     "states": {
       "opened": "Open",
       "closed": "Closed",
@@ -127,6 +131,23 @@
       "closed": "Closed",
       "merged": "Merged",
       "all": "All"
+    },
+    "create": {
+      "dialogTitle": "Create Merge Request",
+      "dialogDescription": "Create a new merge request in GitLab",
+      "title": "Title",
+      "titlePlaceholder": "Merge request title",
+      "sourceBranch": "Source Branch",
+      "sourceBranchPlaceholder": "feature/my-feature",
+      "targetBranch": "Target Branch",
+      "targetBranchPlaceholder": "main",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Describe the changes in this merge request...",
+      "cancel": "Cancel",
+      "creating": "Creating...",
+      "submit": "Create Merge Request",
+      "validationError": "Title, source branch, and target branch are required",
+      "error": "Failed to create merge request"
     }
   },
   "mrReview": {

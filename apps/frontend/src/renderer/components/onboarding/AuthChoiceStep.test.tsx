@@ -14,6 +14,27 @@ import '@testing-library/jest-dom';
 import { AuthChoiceStep } from './AuthChoiceStep';
 import type { APIProfile } from '@shared/types/profile';
 
+// Mock react-i18next to avoid initialization issues
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'authChoice.title': 'Choose Your Authentication Method',
+        'authChoice.description': 'Select how you want to authenticate',
+        'authChoice.oauth.title': 'Sign in with Anthropic',
+        'authChoice.oauth.description': 'Use your Anthropic account to authenticate. No API key required.',
+        'authChoice.apiKey.title': 'Use Custom API Key',
+        'authChoice.apiKey.description': 'Bring your own API key from your Anthropic account.',
+        'authChoice.infoText': 'Both options provide full access to Claude Code features.',
+        'authChoice.skipButton': 'Skip for now'
+      };
+      return translations[key] || key;
+    },
+    i18n: { language: 'en' }
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => children
+}));
+
 // Mock the settings store
 const mockGoToNext = vi.fn();
 const mockGoToPrevious = vi.fn();

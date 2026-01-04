@@ -39,8 +39,37 @@
   },
   "creation": {
     "title": "Create New Task",
-    "description": "Describe what you want to build",
-    "placeholder": "Describe your task..."
+    "description": "Describe what you want to build. The AI will analyze your request and create a detailed specification.",
+    "placeholder": "Describe the feature, bug fix, or improvement you want to implement. Be as specific as possible about requirements, constraints, and expected behavior. Type @ to reference files.",
+    "draftRestored": "Draft restored",
+    "startFresh": "Start Fresh",
+    "descriptionLabel": "Description",
+    "descriptionHint": "Files and images can be copy/pasted or dragged & dropped into the description.",
+    "titleLabel": "Task Title",
+    "titlePlaceholder": "Leave empty to auto-generate from description",
+    "titleHint": "A short, descriptive title will be generated automatically if left empty.",
+    "imageAdded": "Image added successfully!",
+    "classificationOptional": "Classification (optional)",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "priority": "Priority",
+    "selectPriority": "Select priority",
+    "complexity": "Complexity",
+    "selectComplexity": "Select complexity",
+    "impact": "Impact",
+    "selectImpact": "Select impact",
+    "classificationHint": "These labels help organize and prioritize tasks. They're optional but useful for filtering.",
+    "requireReview": "Require human review before coding",
+    "requireReviewHint": "When enabled, you'll be prompted to review the spec and implementation plan before the coding phase begins. This allows you to approve, request changes, or provide feedback.",
+    "gitOptions": "Git Options (optional)",
+    "baseBranch": "Base Branch (optional)",
+    "useProjectDefault": "Use project default",
+    "baseBranchHint": "Override the branch this task's worktree will be created from. Leave empty to use the project's configured default branch.",
+    "hideFiles": "Hide Files",
+    "browseFiles": "Browse Files",
+    "creating": "Creating...",
+    "createTask": "Create Task",
+    "provideDescription": "Please provide a description"
   },
   "empty": {
     "title": "No tasks yet",
@@ -98,5 +127,95 @@
   },
   "metadata": {
     "severity": "severity"
+  },
+  "subtasks": {
+    "empty": {
+      "title": "No subtasks defined",
+      "description": "Implementation subtasks will appear here after planning"
+    },
+    "progress": "{{completed}} of {{total}} completed"
+  },
+  "logs": {
+    "empty": {
+      "title": "No logs yet",
+      "description": "Logs will appear here when the task runs"
+    },
+    "phases": {
+      "planning": "Planning",
+      "coding": "Coding",
+      "validation": "Validation"
+    },
+    "status": {
+      "interrupted": "Interrupted",
+      "running": "Running",
+      "complete": "Complete",
+      "failed": "Failed",
+      "pending": "Pending"
+    },
+    "tools": {
+      "reading": "Reading",
+      "searchingFiles": "Searching files",
+      "searchingCode": "Searching code",
+      "editing": "Editing",
+      "writing": "Writing",
+      "running": "Running",
+      "done": "Done"
+    },
+    "output": {
+      "hideOutput": "Hide output",
+      "showOutput": "Show output",
+      "less": "Less",
+      "more": "More"
+    },
+    "entries": "{{count}} entries",
+    "noLogsYet": "No logs yet"
+  },
+  "models": {
+    "opus": "Opus",
+    "sonnet": "Sonnet",
+    "haiku": "Haiku"
+  },
+  "thinking": {
+    "none": "None",
+    "low": "Low",
+    "medium": "Med",
+    "high": "High",
+    "ultrathink": "Ultra"
+  },
+  "edit": {
+    "title": "Edit Task",
+    "dialogDescription": "Update task details including title, description, classification, images, and settings. Changes will be saved to the spec files.",
+    "saveChanges": "Save Changes",
+    "descriptionRequired": "Description is required",
+    "updateFailed": "Failed to update task. Please try again.",
+    "maxImagesAllowed": "Maximum of {{count}} images allowed",
+    "invalidImageType": "Invalid image type. Allowed: {{types}}",
+    "processPasteFailed": "Failed to process pasted image",
+    "processDropFailed": "Failed to process dropped image",
+    "pasteHint": "Tip: Paste screenshots directly with {{shortcut}} to add reference images.",
+    "referenceImages": "Reference Images (optional)",
+    "imageContextHint": "Attach screenshots, mockups, or diagrams to provide visual context for the AI."
+  },
+  "githubIssues": {
+    "createTaskFromIssue": "Create Task from Issue",
+    "createTaskDescription": "Create a task from this GitHub issue. The task will be added to your Kanban board in the Backlog column.",
+    "failedToLoadComments": "Failed to load comments",
+    "selectCommentsToInclude": "Select Comments to Include ({{selected}}/{{total}})",
+    "deselectAll": "Deselect All",
+    "selectAll": "Select All",
+    "taskWillInclude": "The task will include:",
+    "issueTitleAndDescription": "Issue title and description",
+    "linkBackToGithubIssue": "Link back to the GitHub issue",
+    "labelsAndMetadata": "Labels and metadata from the issue",
+    "noComments": "No comments (this issue has no comments)",
+    "taskCreated": "Task created! View it in your Kanban board.",
+    "creating": "Creating...",
+    "createTask": "Create Task",
+    "done": "Done",
+    "specCreatedFromIssue": "Spec created from issue",
+    "autoFixFailed": "Auto-fix failed",
+    "retryAutoFix": "Retry Auto Fix",
+    "processing": "Processing...",
+    "autoFix": "Auto Fix"
   }
 }

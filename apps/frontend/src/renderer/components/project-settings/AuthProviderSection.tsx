@@ -1,5 +1,6 @@
-import { Shield, Zap, AlertTriangle } from 'lucide-react';
+import { Shield, Zap, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 import { CollapsibleSection } from './CollapsibleSection';
 import { StatusBadge } from './StatusBadge';
 import { PasswordInput } from './PasswordInput';
@@ -42,6 +43,72 @@ export function AuthProviderSection({
   onUpdateConfig,
 }: AuthProviderSectionProps) {
   const { t } = useTranslation(['settings']);
+  const [proxyStatus, setProxyStatus] = useState<'checking' | 'running' | 'stopped' | 'starting'>('checking');
+  const [proxyError, setProxyError] = useState<string | null>(null);
+
+  // Check proxy status when antigravity is enabled
+  useEffect(() => {
+    if (envConfig.antigravityEnabled) {
+      checkProxyStatus();
+    }
+  }, [envConfig.antigravityEnabled]);
+
+  const checkProxyStatus = async () => {
+    setProxyStatus('checking');
+    setProxyError(null);
+
+    try {
+      const result = await window.electronAPI.checkAntigravityProxy();
+
+      if (result.success && result.data) {
+        setProxyStatus(result.data.isRunning ? 'running' : 'stopped');
+      } else {
+        setProxyStatus('stopped');
+        setProxyError(result.error || 'Failed to check proxy status');
+      }
+    } catch (error) {
+      setProxyStatus('stopped');
+      setProxyError(error instanceof Error ? error.message : 'Unknown error');
+    }
+  };
+
+  const startProxy = async () => {
+    setProxyStatus('starting');
+    setProxyError(null);
+
+    try {
+      const result = await window.electronAPI.startAntigravityProxy();
+
+      if (result.success && result.data?.started) {
+        setProxyStatus('running');
+      } else {
+        setProxyStatus('stopped');
+        setProxyError(result.error || 'Failed to start proxy');
+      }
+    } catch (error) {
+      setProxyStatus('stopped');
+      setProxyError(error instanceof Error ? error.message : 'Unknown error');
+    }
+  };
+
+  const handleAntigravityToggle = async (checked: boolean) => {
+    onUpdateConfig({ antigravityEnabled: checked });
+
+    if (checked) {
+      // Check proxy status when enabling
+      setProxyStatus('checking');
+      const result = await window.electronAPI.checkAntigravityProxy();
+
+      if (result.success && result.data) {
+        if (!result.data.isRunning) {
+          // Proxy not running, start it automatically
+          await startProxy();
+        } else {
+          setProxyStatus('running');
+        }
+      }
+    }
+  };
 
   const badge = envConfig.antigravityEnabled ? (
     <StatusBadge status="warning" label="Antigravity" />
@@ -106,9 +173,48 @@ export function AuthProviderSection({
         </div>
         <Switch
           checked={envConfig.antigravityEnabled || false}
-          onCheckedChange={(checked) => onUpdateConfig({ antigravityEnabled: checked })}
+          onCheckedChange={handleAntigravityToggle}
         />
       </div>
+
+      {/* Proxy Status Indicator */}
+      {envConfig.antigravityEnabled && (
+        <div className="flex items-center gap-2 text-xs">
+          {proxyStatus === 'checking' && (
+            <>
+              <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+              <span className="text-muted-foreground">Checking proxy status...</span>
+            </>
+          )}
+          {proxyStatus === 'starting' && (
+            <>
+              <Loader2 className="h-3 w-3 animate-spin text-warning" />
+              <span className="text-warning">Starting proxy...</span>
+            </>
+          )}
+          {proxyStatus === 'running' && (
+            <>
+              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="text-green-600 dark:text-green-400">Proxy running</span>
+            </>
+          )}
+          {proxyStatus === 'stopped' && (
+            <>
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+              <span className="text-red-600 dark:text-red-400">Proxy stopped</span>
+              <button
+                onClick={startProxy}
+                className="ml-2 text-xs underline hover:no-underline"
+              >
+                Start manually
+              </button>
+            </>
+          )}
+          {proxyError && (
+            <span className="text-red-600 dark:text-red-400 ml-2">({proxyError})</span>
+          )}
+        </div>
+      )}
 
       {envConfig.antigravityEnabled && (
         <>

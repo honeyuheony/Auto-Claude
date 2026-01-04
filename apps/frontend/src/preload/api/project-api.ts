@@ -49,6 +49,8 @@ export interface ProjectAPI {
   updateProjectEnv: (projectId: string, config: Partial<ProjectEnvConfig>) => Promise<IPCResult>;
   checkClaudeAuth: (projectId: string) => Promise<IPCResult<ClaudeAuthResult>>;
   invokeClaudeSetup: (projectId: string) => Promise<IPCResult<ClaudeAuthResult>>;
+  checkAntigravityProxy: () => Promise<IPCResult<{ isRunning: boolean; baseUrl: string }>>;
+  startAntigravityProxy: () => Promise<IPCResult<{ started: boolean; message: string }>>;
 
   // Dialog Operations
   selectDirectory: () => Promise<string | null>;
@@ -198,6 +200,12 @@ export const createProjectAPI = (): ProjectAPI => ({
 
   invokeClaudeSetup: (projectId: string): Promise<IPCResult<ClaudeAuthResult>> =>
     ipcRenderer.invoke(IPC_CHANNELS.ENV_INVOKE_CLAUDE_SETUP, projectId),
+
+  checkAntigravityProxy: (): Promise<IPCResult<{ isRunning: boolean; baseUrl: string }>> =>
+    ipcRenderer.invoke(IPC_CHANNELS.ENV_CHECK_ANTIGRAVITY_PROXY),
+
+  startAntigravityProxy: (): Promise<IPCResult<{ started: boolean; message: string }>> =>
+    ipcRenderer.invoke(IPC_CHANNELS.ENV_START_ANTIGRAVITY_PROXY),
 
   // Dialog Operations
   selectDirectory: (): Promise<string | null> =>

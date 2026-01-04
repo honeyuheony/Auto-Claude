@@ -738,4 +738,122 @@ ${existingVars['GRAPHITI_DB_PATH'] ? `GRAPHITI_DB_PATH=${existingVars['GRAPHITI_
     }
   );
 
+  // ============================================
+  // Antigravity Proxy Operations
+  // ============================================
+
+  ipcMain.handle(
+    IPC_CHANNELS.ENV_CHECK_ANTIGRAVITY_PROXY,
+    async (_): Promise<IPCResult<{ isRunning: boolean; baseUrl: string }>> => {
+      try {
+        // Get proxy URL from environment or use default
+        const baseUrl = process.env.ANTIGRAVITY_BASE_URL || 'http://localhost:8080';
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+          const response = await fetch(`${baseUrl}/health`, {
+            method: 'GET',
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+
+          const isRunning = response.ok;
+          return {
+            success: true,
+            data: { isRunning, baseUrl }
+          };
+        } catch {
+          // Proxy not running or not reachable
+          return {
+            success: true,
+            data: { isRunning: false, baseUrl }
+          };
+        }
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to check proxy status'
+        };
+      }
+    }
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.ENV_START_ANTIGRAVITY_PROXY,
+    async (_): Promise<IPCResult<{ started: boolean; message: string }>> => {
+      try {
+        // Check if npx is available
+        const npxCheck = spawn('npx', ['--version'], { shell: true });
+
+        const npxAvailable = await new Promise<boolean>((resolve) => {
+          npxCheck.on('close', (code) => resolve(code === 0));
+          npxCheck.on('error', () => resolve(false));
+        });
+
+        if (!npxAvailable) {
+          return {
+            success: false,
+            error: 'npx not found. Please install Node.js first.'
+          };
+        }
+
+        // Start the proxy
+        const proxyProcess = spawn('npx', ['antigravity-claude-proxy', 'start'], {
+          shell: true,
+          detached: true,
+          stdio: 'ignore'
+        });
+
+        // Detach the process so it continues running
+        proxyProcess.unref();
+
+        // Wait for proxy to become healthy (max 10 seconds)
+        const baseUrl = process.env.ANTIGRAVITY_BASE_URL || 'http://localhost:8080';
+        const startTime = Date.now();
+        const timeout = 10000; // 10 seconds
+
+        while (Date.now() - startTime < timeout) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1000);
+
+            const response = await fetch(`${baseUrl}/health`, {
+              method: 'GET',
+              signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+              return {
+                success: true,
+                data: {
+                  started: true,
+                  message: 'Antigravity proxy started successfully'
+                }
+              };
+            }
+          } catch {
+            // Wait a bit before retrying
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+
+        // Timeout - proxy didn't start in time
+        return {
+          success: false,
+          error: 'Proxy started but did not become healthy within 10 seconds. Please check manually.'
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to start proxy'
+        };
+      }
+    }
+  );
+
 }

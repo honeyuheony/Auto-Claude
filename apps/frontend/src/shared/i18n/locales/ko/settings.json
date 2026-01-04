@@ -507,6 +507,13 @@
     "remove": "제거",
     "restore": "복원",
     "noMcpServers": "MCP 서버 없음",
+    "mcpServersLabel": "MCP 서버",
+    "availableTools": "사용 가능한 도구",
+    "textOnlyNoTools": "텍스트 전용 (도구 없음)",
+    "forProject": "{{projectName}} 대상",
+    "agentsCount": "({{count}}개 에이전트)",
+    "edit": "편집",
+    "delete": "삭제",
     "cannotRemove": "제거 불가 (필수)",
     "servers": {
       "context7": {

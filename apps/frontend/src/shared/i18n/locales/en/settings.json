@@ -507,6 +507,13 @@
     "remove": "Remove",
     "restore": "Restore",
     "noMcpServers": "No MCP servers",
+    "mcpServersLabel": "MCP Servers",
+    "availableTools": "Available Tools",
+    "textOnlyNoTools": "Text-only (no tools)",
+    "forProject": "for {{projectName}}",
+    "agentsCount": "({{count}} agents)",
+    "edit": "Edit",
+    "delete": "Delete",
     "cannotRemove": "Cannot remove (required)",
     "servers": {
       "context7": {

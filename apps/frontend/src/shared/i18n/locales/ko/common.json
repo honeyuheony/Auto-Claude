@@ -5,7 +5,21 @@
     "hideArchived": "보관된 항목 숨기기",
     "showArchivedTasks": "보관된 작업 표시",
     "hideArchivedTasks": "보관된 작업 숨기기",
-    "closeTab": "탭 닫기"
+    "closeTab": "탭 닫기",
+    "addProject": "프로젝트 추가"
+  },
+  "chatHistory": {
+    "title": "대화 기록",
+    "newConversation": "새 대화",
+    "noConversationsYet": "아직 대화가 없습니다",
+    "today": "오늘",
+    "yesterday": "어제",
+    "daysAgo": "{{count}}일 전",
+    "messageCount": "메시지 {{count}}개",
+    "messageCount_plural": "메시지 {{count}}개",
+    "rename": "이름 변경",
+    "deleteConversation": "대화를 삭제하시겠습니까?",
+    "deleteConfirmation": "이 대화와 모든 메시지가 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다."
   },
   "buttons": {
     "save": "저장",

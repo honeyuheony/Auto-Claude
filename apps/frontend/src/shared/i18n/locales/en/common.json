@@ -5,7 +5,21 @@
     "hideArchived": "Hide archived",
     "showArchivedTasks": "Show archived tasks",
     "hideArchivedTasks": "Hide archived tasks",
-    "closeTab": "Close tab"
+    "closeTab": "Close tab",
+    "addProject": "Add Project"
+  },
+  "chatHistory": {
+    "title": "Chat History",
+    "newConversation": "New conversation",
+    "noConversationsYet": "No conversations yet",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago",
+    "messageCount": "{{count}} message",
+    "messageCount_plural": "{{count}} messages",
+    "rename": "Rename",
+    "deleteConversation": "Delete conversation?",
+    "deleteConfirmation": "This will permanently delete this conversation and all its messages. This action cannot be undone."
   },
   "buttons": {
     "save": "Save",

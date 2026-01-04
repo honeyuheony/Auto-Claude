@@ -381,5 +381,24 @@
     "allowedTypesInfo": "{{types}} 각각 10MB까지 ({{current}}/{{max}})",
     "maxImagesInfo": "최대 {{max}}개 이미지",
     "largeFileWarning": "큰 파일 - 압축을 고려하세요"
+  },
+  "changelog": {
+    "preview": "미리보기",
+    "markdown": "Markdown",
+    "copy": "복사",
+    "copied": "복사됨!",
+    "copyToClipboard": "클립보드에 복사",
+    "save": "저장",
+    "saved": "저장됨!",
+    "saveToChangelog": "CHANGELOG.md에 저장",
+    "prependToChangelog": "프로젝트 루트의 CHANGELOG.md에 앞에 추가",
+    "dropImagesToAdd": "이미지를 여기에 놓아 변경 로그에 추가",
+    "pasteImagesHint": "설명에 이미지를 붙여넣어 변경 로그에 저장",
+    "placeholderText": "생성된 변경 로그가 여기에 표시됩니다...",
+    "emptyStateTitle": "\"변경 로그 생성\"을 클릭하여 릴리스 노트를 생성하세요.",
+    "loadingImage": "이미지 로딩 중...",
+    "imageNotFound": "이미지를 찾을 수 없음",
+    "cannotLoadImage": "로컬 이미지를 로드할 수 없음: 프로젝트 경로 없음",
+    "failedToLoadImage": "이미지 로드 실패"
   }
 }

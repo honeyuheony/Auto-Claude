@@ -381,5 +381,24 @@
     "allowedTypesInfo": "{{types}} up to 10MB each ({{current}}/{{max}})",
     "maxImagesInfo": "{{max}} images maximum",
     "largeFileWarning": "Large file - consider compressing"
+  },
+  "changelog": {
+    "preview": "Preview",
+    "markdown": "Markdown",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "copyToClipboard": "Copy to clipboard",
+    "save": "Save",
+    "saved": "Saved!",
+    "saveToChangelog": "Save to CHANGELOG.md",
+    "prependToChangelog": "Prepend to CHANGELOG.md in project root",
+    "dropImagesToAdd": "Drop images here to add to changelog",
+    "pasteImagesHint": "Paste images into the description to save them to the changelog",
+    "placeholderText": "Generated changelog will appear here...",
+    "emptyStateTitle": "Click \"Generate Changelog\" to create release notes.",
+    "loadingImage": "Loading image...",
+    "imageNotFound": "Image not found",
+    "cannotLoadImage": "Cannot load local image: no project path",
+    "failedToLoadImage": "Failed to load image"
   }
 }

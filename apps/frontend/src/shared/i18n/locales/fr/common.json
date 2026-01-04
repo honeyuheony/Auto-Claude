@@ -263,5 +263,24 @@
     "done": "Terminé",
     "failedLabel": "Échoué",
     "starting": "Démarrage..."
+  },
+  "changelog": {
+    "preview": "Aperçu",
+    "markdown": "Markdown",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "copyToClipboard": "Copier dans le presse-papiers",
+    "save": "Enregistrer",
+    "saved": "Enregistré !",
+    "saveToChangelog": "Enregistrer dans CHANGELOG.md",
+    "prependToChangelog": "Ajouter au début de CHANGELOG.md à la racine du projet",
+    "dropImagesToAdd": "Déposez les images ici pour les ajouter au changelog",
+    "pasteImagesHint": "Collez des images dans la description pour les enregistrer dans le changelog",
+    "placeholderText": "Le changelog généré apparaîtra ici...",
+    "emptyStateTitle": "Cliquez sur \"Générer le changelog\" pour créer des notes de version.",
+    "loadingImage": "Chargement de l'image...",
+    "imageNotFound": "Image non trouvée",
+    "cannotLoadImage": "Impossible de charger l'image locale : pas de chemin de projet",
+    "failedToLoadImage": "Échec du chargement de l'image"
   }
 }

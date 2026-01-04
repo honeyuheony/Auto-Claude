@@ -230,6 +230,15 @@
     "followup": "Follow-up",
     "initial": "Initial"
   },
+  "githubIssues": {
+    "commentsCount": "{{count}} comments",
+    "viewTask": "View Task",
+    "createTask": "Create Task",
+    "taskLinked": "Task Linked",
+    "taskId": "Task ID: {{id}}",
+    "assignees": "Assignees",
+    "milestone": "Milestone"
+  },
   "downloads": {
     "toggleExpand": "Toggle download details",
     "downloading": "Downloading {{count}} model",

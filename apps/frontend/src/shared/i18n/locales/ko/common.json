@@ -230,6 +230,15 @@
     "followup": "후속",
     "initial": "초기"
   },
+  "githubIssues": {
+    "commentsCount": "{{count}}개 댓글",
+    "viewTask": "작업 보기",
+    "createTask": "작업 생성",
+    "taskLinked": "작업 연결됨",
+    "taskId": "작업 ID: {{id}}",
+    "assignees": "담당자",
+    "milestone": "마일스톤"
+  },
   "downloads": {
     "toggleExpand": "다운로드 세부 정보 토글",
     "downloading": "{{count}}개 모델 다운로드 중",

@@ -229,6 +229,15 @@
     "followup": "Suivi",
     "initial": "Initial"
   },
+  "githubIssues": {
+    "commentsCount": "{{count}} commentaires",
+    "viewTask": "Voir la tâche",
+    "createTask": "Créer une tâche",
+    "taskLinked": "Tâche liée",
+    "taskId": "ID de tâche : {{id}}",
+    "assignees": "Assignés",
+    "milestone": "Jalon"
+  },
   "downloads": {
     "toggleExpand": "Afficher/masquer les détails",
     "downloading": "Téléchargement de {{count}} modèle",

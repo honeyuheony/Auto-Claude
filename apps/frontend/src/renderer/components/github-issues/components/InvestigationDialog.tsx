@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, Loader2, CheckCircle2, MessageCircle } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Progress } from '../../ui/progress';
@@ -32,6 +33,7 @@ export function InvestigationDialog({
   onClose,
   projectId
 }: InvestigationDialogProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const [comments, setComments] = useState<GitHubComment[]>([]);
   const [selectedCommentIds, setSelectedCommentIds] = useState<number[]>([]);
   const [loadingComments, setLoadingComments] = useState(false);
@@ -60,7 +62,7 @@ export function InvestigationDialog({
           if (!isMounted) return;
           console.error('Failed to fetch comments:', err);
           setFetchCommentsError(
-            err instanceof Error ? err.message : 'Failed to load comments'
+            err instanceof Error ? err.message : t('tasks:githubIssues.failedToLoadComments')
           );
         })
         .finally(() => {
@@ -101,7 +103,7 @@ export function InvestigationDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-info" />
-            Create Task from Issue
+            {t('tasks:githubIssues.createTaskFromIssue')}
           </DialogTitle>
           <DialogDescription>
             {selectedIssue && (
@@ -115,7 +117,7 @@ export function InvestigationDialog({
         {investigationStatus.phase === 'idle' ? (
           <div className="space-y-4 flex-1 min-h-0 flex flex-col">
             <p className="text-sm text-muted-foreground">
-              Create a task from this GitHub issue. The task will be added to your Kanban board in the Backlog column.
+              {t('tasks:githubIssues.createTaskDescription')}
             </p>
 
             {/* Comments section */}
@@ -125,7 +127,7 @@ export function InvestigationDialog({
               </div>
             ) : fetchCommentsError ? (
               <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-4">
-                <p className="text-sm text-destructive font-medium">Failed to load comments</p>
+                <p className="text-sm text-destructive font-medium">{t('tasks:githubIssues.failedToLoadComments')}</p>
                 <p className="text-xs text-destructive/80 mt-1">{fetchCommentsError}</p>
               </div>
             ) : comments.length > 0 ? (
@@ -133,7 +135,7 @@ export function InvestigationDialog({
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium flex items-center gap-2">
                     <MessageCircle className="h-4 w-4" />
-                    Select Comments to Include ({selectedCommentIds.length}/{comments.length})
+                    {t('tasks:githubIssues.selectCommentsToInclude', { selected: selectedCommentIds.length, total: comments.length })}
                   </h4>
                   <Button
                     variant="ghost"
@@ -141,7 +143,7 @@ export function InvestigationDialog({
                     onClick={toggleAllComments}
                     className="text-xs"
                   >
-                    {selectedCommentIds.length === comments.length ? 'Deselect All' : 'Select All'}
+                    {selectedCommentIds.length === comments.length ? t('tasks:githubIssues.deselectAll') : t('tasks:githubIssues.selectAll')}
                   </Button>
                 </div>
                 <ScrollArea className="flex-1 min-h-0 border rounded-md">
@@ -174,12 +176,12 @@ export function InvestigationDialog({
               </div>
             ) : (
               <div className="rounded-lg border border-border bg-muted/30 p-4">
-                <h4 className="text-sm font-medium mb-2">The task will include:</h4>
+                <h4 className="text-sm font-medium mb-2">{t('tasks:githubIssues.taskWillInclude')}</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Issue title and description</li>
-                  <li>• Link back to the GitHub issue</li>
-                  <li>• Labels and metadata from the issue</li>
-                  <li>• No comments (this issue has no comments)</li>
+                  <li>• {t('tasks:githubIssues.issueTitleAndDescription')}</li>
+                  <li>• {t('tasks:githubIssues.linkBackToGithubIssue')}</li>
+                  <li>• {t('tasks:githubIssues.labelsAndMetadata')}</li>
+                  <li>• {t('tasks:githubIssues.noComments')}</li>
                 </ul>
               </div>
             )}
@@ -203,7 +205,7 @@ export function InvestigationDialog({
             {investigationStatus.phase === 'complete' && (
               <div className="rounded-lg bg-success/10 border border-success/30 p-3 flex items-center gap-2 text-sm text-success">
                 <CheckCircle2 className="h-4 w-4" />
-                Task created! View it in your Kanban board.
+                {t('tasks:githubIssues.taskCreated')}
               </div>
             )}
           </div>
@@ -213,23 +215,23 @@ export function InvestigationDialog({
           {investigationStatus.phase === 'idle' && (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                {t('common:buttons.cancel')}
               </Button>
               <Button onClick={handleStartInvestigation}>
                 <Sparkles className="h-4 w-4 mr-2" />
-                Create Task
+                {t('tasks:githubIssues.createTask')}
               </Button>
             </>
           )}
           {investigationStatus.phase !== 'idle' && investigationStatus.phase !== 'complete' && (
             <Button variant="outline" disabled>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Creating...
+              {t('tasks:githubIssues.creating')}
             </Button>
           )}
           {investigationStatus.phase === 'complete' && (
             <Button onClick={onClose}>
-              Done
+              {t('tasks:githubIssues.done')}
             </Button>
           )}
         </DialogFooter>

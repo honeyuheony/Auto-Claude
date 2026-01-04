@@ -195,5 +195,27 @@
     "pasteHint": "팁: {{shortcut}}으로 스크린샷을 직접 붙여넣어 참조 이미지를 추가할 수 있습니다.",
     "referenceImages": "참조 이미지 (선택 사항)",
     "imageContextHint": "AI에게 시각적 맥락을 제공하기 위해 스크린샷, 목업 또는 다이어그램을 첨부하세요."
+  },
+  "githubIssues": {
+    "createTaskFromIssue": "이슈에서 작업 만들기",
+    "createTaskDescription": "이 GitHub 이슈에서 작업을 만듭니다. 작업이 칸반 보드의 백로그 열에 추가됩니다.",
+    "failedToLoadComments": "댓글 로드 실패",
+    "selectCommentsToInclude": "포함할 댓글 선택 ({{selected}}/{{total}})",
+    "deselectAll": "모두 선택 해제",
+    "selectAll": "모두 선택",
+    "taskWillInclude": "작업에 포함되는 항목:",
+    "issueTitleAndDescription": "이슈 제목 및 설명",
+    "linkBackToGithubIssue": "GitHub 이슈 링크",
+    "labelsAndMetadata": "이슈의 레이블 및 메타데이터",
+    "noComments": "댓글 없음 (이 이슈에 댓글이 없습니다)",
+    "taskCreated": "작업이 생성되었습니다! 칸반 보드에서 확인하세요.",
+    "creating": "생성 중...",
+    "createTask": "작업 만들기",
+    "done": "완료",
+    "specCreatedFromIssue": "이슈에서 Spec 생성됨",
+    "autoFixFailed": "자동 수정 실패",
+    "retryAutoFix": "자동 수정 재시도",
+    "processing": "처리 중...",
+    "autoFix": "자동 수정"
   }
 }

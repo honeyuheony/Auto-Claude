@@ -245,6 +245,12 @@
     "authenticationMethod": "Méthode d'authentification : {{name}}",
     "usingProfile": "Utilisation du profil : {{name}}"
   },
+  "fileExplorer": {
+    "noFilesFound": "Aucun fichier trouvé",
+    "projectFiles": "Fichiers du projet",
+    "refresh": "Actualiser",
+    "dragHint": "Glissez les fichiers dans un terminal pour insérer le chemin"
+  },
   "downloads": {
     "toggleExpand": "Afficher/masquer les détails",
     "downloading": "Téléchargement de {{count}} modèle",

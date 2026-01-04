@@ -296,6 +296,12 @@
     "stopGeneration": "Stop generation",
     "progress": "Progress"
   },
+  "fileExplorer": {
+    "noFilesFound": "No files found",
+    "projectFiles": "Project Files",
+    "refresh": "Refresh",
+    "dragHint": "Drag files into a terminal to insert the path"
+  },
   "projectIndex": {
     "title": "Project Structure",
     "subtitle": "AI-discovered knowledge about your codebase",

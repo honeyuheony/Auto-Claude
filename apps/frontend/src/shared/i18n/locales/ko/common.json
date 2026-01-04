@@ -266,6 +266,13 @@
     "fileInsights": "파일 인사이트",
     "subtasksCompleted": "완료된 하위 작업"
   },
+  "auth": {
+    "oauth": "OAuth",
+    "apiProfile": "API 프로필",
+    "authentication": "인증",
+    "authenticationMethod": "인증 방식: {{name}}",
+    "usingProfile": "사용 중인 프로필: {{name}}"
+  },
   "projectIndex": {
     "title": "프로젝트 구조",
     "subtitle": "AI가 발견한 코드베이스 정보",

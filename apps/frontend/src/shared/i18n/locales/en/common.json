@@ -266,6 +266,13 @@
     "fileInsights": "File Insights",
     "subtasksCompleted": "Subtasks Completed"
   },
+  "auth": {
+    "oauth": "OAuth",
+    "apiProfile": "API Profile",
+    "authentication": "Authentication",
+    "authenticationMethod": "Authentication method: {{name}}",
+    "usingProfile": "Using profile: {{name}}"
+  },
   "projectIndex": {
     "title": "Project Structure",
     "subtitle": "AI-discovered knowledge about your codebase",

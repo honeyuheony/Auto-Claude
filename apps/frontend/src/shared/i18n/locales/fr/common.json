@@ -238,6 +238,13 @@
     "assignees": "Assignés",
     "milestone": "Jalon"
   },
+  "auth": {
+    "oauth": "OAuth",
+    "apiProfile": "Profil API",
+    "authentication": "Authentification",
+    "authenticationMethod": "Méthode d'authentification : {{name}}",
+    "usingProfile": "Utilisation du profil : {{name}}"
+  },
   "downloads": {
     "toggleExpand": "Afficher/masquer les détails",
     "downloading": "Téléchargement de {{count}} modèle",

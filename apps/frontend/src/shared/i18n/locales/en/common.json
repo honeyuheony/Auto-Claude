@@ -251,5 +251,19 @@
     "done": "Done",
     "failedLabel": "Failed",
     "starting": "Starting..."
+  },
+  "memoryCard": {
+    "session": "Session #{{number}}",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "whatWorked": "What Worked",
+    "whatFailed": "What Failed",
+    "approach": "Approach",
+    "recommendations": "Recommendations",
+    "patterns": "Patterns",
+    "gotchas": "Gotchas",
+    "changedFiles": "Changed Files",
+    "fileInsights": "File Insights",
+    "subtasksCompleted": "Subtasks Completed"
   }
 }

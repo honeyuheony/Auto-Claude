@@ -251,5 +251,19 @@
     "done": "완료",
     "failedLabel": "실패",
     "starting": "시작 중..."
+  },
+  "memoryCard": {
+    "session": "세션 #{{number}}",
+    "collapse": "접기",
+    "expand": "펼치기",
+    "whatWorked": "성공한 것",
+    "whatFailed": "실패한 것",
+    "approach": "접근 방식",
+    "recommendations": "권장 사항",
+    "patterns": "패턴",
+    "gotchas": "주의 사항",
+    "changedFiles": "변경된 파일",
+    "fileInsights": "파일 인사이트",
+    "subtasksCompleted": "완료된 하위 작업"
   }
 }

@@ -12,6 +12,26 @@ import { AuthStatusIndicator } from './AuthStatusIndicator';
 import { useSettingsStore } from '../stores/settings-store';
 import type { APIProfile } from '@shared/types/profile';
 
+// Mock react-i18next to avoid initialization issues
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: { name?: string }) => {
+      const translations: Record<string, string> = {
+        'auth.oauth': 'OAuth',
+        'auth.authentication': 'Authentication',
+        'auth.apiProfile': 'API Profile'
+      };
+      // Handle interpolation for auth.authenticationMethod
+      if (key === 'auth.authenticationMethod' && options?.name) {
+        return `Authentication method: ${options.name}`;
+      }
+      return translations[key] || key;
+    },
+    i18n: { language: 'en' }
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => children
+}));
+
 // Mock the settings store
 vi.mock('../stores/settings-store', () => ({
   useSettingsStore: vi.fn()
